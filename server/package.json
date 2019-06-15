@@ -4,21 +4,25 @@
   "description": "",
   "main": "dist/index.js",
   "dependencies": {
-    "@types/expect": "^1.20.4",
-    "@types/mocha": "^5.2.7",
-    "@types/supertest": "^2.0.7",
+    "cors": "^2.8.5",
     "expect": "^24.8.0",
-    "express": "^4.17.1",
-    "mocha": "^6.1.4",
-    "supertest": "^4.0.2",
     "ts-node": "^8.3.0"
   },
   "devDependencies": {
-    "@types/express": "^4.17.0"
+    "express": "^4.17.1",
+    "mocha": "^6.1.4",
+    "morgan": "^1.9.1",
+    "supertest": "^4.0.2",
+    "@types/express": "^4.17.0",
+    "@types/cors": "^2.8.5",
+    "@types/expect": "^1.20.4",
+    "@types/mocha": "^5.2.7",
+    "@types/morgan": "^1.7.35",
+    "@types/supertest": "^2.0.7"
   },
   "scripts": {
-    "test": "mocha -r ts-node/register **/*.test.ts",
-    "dev": "ts-node src/index"
+    "test": "export NODE_ENV=test mocha -r ts-node/register **/*.test.ts",
+    "dev": "export NODE_ENV=development && nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.test.ts' --exec 'ts-node' src/index.ts"
   },
   "author": "",
   "license": "ISC"

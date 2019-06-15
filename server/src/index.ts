@@ -1,10 +1,22 @@
 import express from 'express'
-const PORT = process.env.PORT || 3000;
+import morgan from 'morgan';
+import cors from 'cors'
+const env = process.env
+const PORT = process.env.PORT || 3001;
 
 const app = express();
 
 
-app.get('/', (req, res) => {
+
+if (env.NODE_ENV === 'development') {
+    app.use(morgan("dev"))
+    app.use(cors({
+        origin: 'http://localhost:3000'
+    }))
+}
+
+
+app.get('/api', (req, res) => {
     res.send('OK')
 })
 
