@@ -4,8 +4,10 @@
   "description": "",
   "main": "dist/index.js",
   "dependencies": {
+    "@types/pg": "^7.4.14",
     "cors": "^2.8.5",
     "expect": "^24.8.0",
+    "pg": "^7.11.0",
     "ts-node": "^8.3.0"
   },
   "devDependencies": {
@@ -21,7 +23,7 @@
     "@types/supertest": "^2.0.7"
   },
   "scripts": {
-    "test": "export NODE_ENV=test mocha -r ts-node/register **/*.test.ts",
+    "test": "export NODE_ENV=test && mocha -r ts-node/register **/*.test.ts",
     "dev": "export NODE_ENV=development && nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.test.ts' --exec 'ts-node' src/index.ts"
   },
   "author": "",

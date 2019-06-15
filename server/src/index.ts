@@ -1,6 +1,7 @@
 import express from 'express'
 import morgan from 'morgan';
 import cors from 'cors'
+import db from './db'
 const env = process.env
 const PORT = process.env.PORT || 3001;
 
@@ -21,8 +22,13 @@ app.get('/api', (req, res) => {
 })
 
 
-app.listen(PORT, () => {
-    console.log(`LISTENING ON PORT ${PORT}`)
-})
+db.connect()
+    .then(async () => {
+        app.listen(PORT, () => {
+            console.log(`Listening on PORT ${PORT}`)
+        })
+    }).catch(e => {
+        console.log(e)
+    })
 
 export default app
