@@ -2,9 +2,9 @@
 import bcrypt from 'bcryptjs'
 import { validate } from 'email-validator'
 
-
-
+import ApiError from '../../utils/error';
 import db from '../db'
+
 export const userSchema: DBSchema = {
     create: `CREATE TABLE IF NOT EXISTS users(
         id serial PRIMARY KEY,
@@ -48,7 +48,14 @@ export class User implements UserSchema.I {
         return new User(user)
     }
     static async create(data: UserSchema.Create): Promise<User> {
-        if (!validate(data.email)) throw new Error(`Validation Error: ${data.email} is not a valid email`)
+        const missingFields = [!data.email && 'email', !data.password && 'password', !data.firstName && 'firstName', !data.lastName && 'lastName']
+            .filter(field => !!field);
+        if (missingFields.length) {
+            throw new ApiError(`Missing fields ${missingFields.join(', ')}`, 400)
+        }
+        if (!validate(data.email)) {
+            throw new ApiError(`Validation Error: ${data.email} is not a valid email`, 400)
+        }
         const password = await bcrypt.hash(data.password, 10)
         const { rows: [newUser] } = await db.query(`
             INSERT INTO 
@@ -60,5 +67,26 @@ export class User implements UserSchema.I {
 
 
         return new User(newUser)
+    }
+    static async authenticate(email: string, password: string): Promise<User> {
+        if (!email) throw new ApiError(`Missing field email`, 400)
+        if (!password) throw new ApiError(`Missing field password`, 400)
+        const { rows: [user] } = await db.query(`
+            SELECT 
+                email, id, "firstName", "lastName", password, "createdAt"
+            FROM users
+            WHERE email = $1
+        `, [email])
+        if (!user) {
+            throw new ApiError(`User with email of ${email} not found.`, 404)
+        }
+        const valid: boolean = await bcrypt.compare(password, user.password)
+        if (valid) {
+            delete user.password
+            return new User(user)
+        } else {
+            throw new ApiError(`That is not the correct password for ${email}`, 401)
+
+        }
     }
 }

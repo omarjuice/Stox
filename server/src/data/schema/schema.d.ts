@@ -9,6 +9,7 @@ declare namespace UserSchema {
         firstName: string,
         lastName: string,
         email: string,
+        [key: string]: any
     }
     interface Create extends I {
         password: string
