@@ -1,8 +1,8 @@
 import expect from 'expect';
 import request from 'supertest';
 import app from '../'
-import db from '../db'
-
+import db from '../data/'
+import { User } from '../data/'
 describe('API', () => {
     it('Should return 200', done => {
         request(app)

@@ -1,7 +1,7 @@
 import express from 'express'
 import morgan from 'morgan';
 import cors from 'cors'
-import db from './db'
+import db, { createTables } from './data/index';
 const env = process.env
 const PORT = process.env.PORT || 3001;
 
@@ -24,6 +24,7 @@ app.get('/api', (req, res) => {
 
 db.connect()
     .then(async () => {
+        await createTables()
         app.listen(PORT, () => {
             console.log(`Listening on PORT ${PORT}`)
         })
