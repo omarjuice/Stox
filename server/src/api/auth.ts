@@ -22,7 +22,8 @@ router.post('/login', async (req, res, next) => {
         const { email, password } = req.body
         const user: User = await User.authenticate(email, password)
         req.session.user = user.id
-        res.send(user);
+        req.session.save(() => { res.send(user); console.log(req.session); })
+
     } catch (e) {
         next(e)
     }

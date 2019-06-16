@@ -1,8 +1,10 @@
-import API from './api';
+/// <reference path="../../../types.d.ts" />
+import Auth from './auth';
 class RootStore {
-    api: API
+    auth: Auth
     constructor() {
-        this.api = new API()
+        this.auth = new Auth()
+        this.auth.me()
     }
 }
 

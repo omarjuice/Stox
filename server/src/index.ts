@@ -5,6 +5,7 @@ import session from 'express-session'
 import db, { createTables } from './data/index';
 import api from './api'
 import ApiError from './utils/error';
+import seed from './tests/seed';
 const env = process.env
 const PORT = process.env.PORT || 3001;
 
@@ -20,7 +21,8 @@ app.use(express.urlencoded({ extended: true }))
 if (developmentEnv || testEnv) {
     app.use(morgan("dev"))
     app.use(cors({
-        origin: 'http://localhost:3000'
+        origin: 'http://localhost:3000',
+        credentials: true
     }))
 } else if (env.NODE_ENV === 'production') {
 
@@ -28,7 +30,6 @@ if (developmentEnv || testEnv) {
 
 app.use(session({
     name: 'ttpfs-session',
-    store: undefined,
     secret: process.env.SESSION_SECRET || 'secret',
     resave: false,
     saveUninitialized: true,
@@ -37,6 +38,11 @@ app.use(session({
         maxAge: !testEnv ? 1000 * 60 * 60 * 24 * 30 : 60000
     }
 }))
+
+app.use((req, res, next) => {
+    console.log(req.sessionID);
+    next()
+})
 
 app.use('/api', api)
 
@@ -50,6 +56,7 @@ app.use((error: ApiError, req, res, next) => {
 db.connect()
     .then(async () => {
         await createTables()
+        // if (developmentEnv) await seed()
         app.listen(PORT, () => {
             console.log(`Listening on PORT ${PORT}`)
         })

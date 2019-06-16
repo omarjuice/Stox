@@ -1,12 +1,14 @@
 import React from 'react';
-import Fetch from './components/Fetch'
-const App: React.FC = () => {
+import Login from './components/Login';
+import store from './store';
+import { observer } from 'mobx-react';
+const App: React.FC = observer(() => {
   return (
     <div className="App">
-      APP
-      <Fetch />
+      {store.auth.authenticated && 'AUTHENTICATED'}
+      <Login />
     </div>
   );
-}
+})
 
 export default App;

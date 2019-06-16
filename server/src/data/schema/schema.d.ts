@@ -1,3 +1,4 @@
+/// <reference path="../../../../types.d.ts" />
 interface DBSchema {
     create: string
     drop: string
@@ -5,10 +6,7 @@ interface DBSchema {
 
 
 declare namespace UserSchema {
-    interface I {
-        firstName: string,
-        lastName: string,
-        email: string,
+    interface I extends User {
         [key: string]: any
     }
     interface Create extends I {
