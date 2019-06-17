@@ -1,5 +1,6 @@
 import { observable } from "mobx";
 import axios from "axios"
+import { History } from "history";
 
 class Auth {
     @observable loading: boolean = false;
@@ -27,6 +28,21 @@ class Auth {
                 this.loading = false
             })
     }
+    async signup(details: User) {
+        try {
+            const response = await axios.post('/auth/register', details)
+            const user: User = response.data
+            if (!user || !user.id) {
+                this.user = null
+                this.authenticated = false
+            } else {
+                this.user = user
+                this.authenticated = true
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
     async login(email: string, password: string) {
         try {
             const response = await axios.post('/auth/login', { email, password })
@@ -42,6 +58,12 @@ class Auth {
         } catch (e) {
             this.error = e
         }
+    }
+    async logout(history: History) {
+        await axios.post('/auth/logout')
+        this.authenticated = false
+        this.user = null
+        history.push('/')
     }
     async me() {
         const response = await axios.get('/auth/me')

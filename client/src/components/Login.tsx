@@ -1,9 +1,13 @@
 import React from 'react';
 import store from '../store'
 import { observer } from 'mobx-react';
+import { RouteComponentProps } from 'react-router';
+import AuthContainer from './AuthContainer';
+
+
 
 @observer
-class Login extends React.Component {
+class Login extends React.Component<RouteComponentProps> {
     state = {
         email: "",
         password: ""
@@ -15,42 +19,36 @@ class Login extends React.Component {
             })
         }
     }
-    handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
+    handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
         const { email, password } = this.state
-        store.auth.login(email, password)
+        await store.auth.login(email, password)
+        if (store.auth.authenticated) {
+            this.props.history.push('/stocks')
+        }
     }
     render() {
         return (
-            <section className="hero is-light is-fullheight">
-                <div className="hero-body">
-                    <div className="container has-text-centered">
-                        <div className="column is-4 is-offset-4">
-                            <h3 className="title has-text-grey">Stocks</h3>
-                            <p className="subtitle has-text-grey">Please login to proceed.</p>
-                            <div className="box">
-                                <form onSubmit={this.handleSubmit}>
-                                    <div className="field">
-                                        <div className="control">
-                                            <input onChange={this.handleChange('email')} className="input is-large" type="email" placeholder="Your Email" autoFocus={true} />
-                                        </div>
-                                    </div>
-
-                                    <div className="field">
-                                        <div className="control">
-                                            <input onChange={this.handleChange('password')} className="input is-large" type="password" placeholder="Your Password" />
-                                        </div>
-                                    </div>
-                                    <button className="button is-block is-info is-large is-fullwidth">Login</button>
-                                </form>
+            <AuthContainer type="login">
+                <div className="box">
+                    <form onSubmit={this.handleSubmit}>
+                        <div className="field">
+                            <div className="control">
+                                <input onChange={this.handleChange('email')} value={this.state.email} className="input is-large" type="email" placeholder="Your Email" autoFocus={true} />
                             </div>
-                            <p className="has-text-grey">
-                                <button className="button is-text">Sign Up</button>
-                            </p>
                         </div>
-                    </div>
+                        <div className="field">
+                            <div className="control">
+                                <input onChange={this.handleChange('password')} value={this.state.password} className="input is-large" type="password" placeholder="Your Password" />
+                            </div>
+                        </div>
+                        <button className="button is-block is-info is-large is-fullwidth">Login</button>
+                    </form>
                 </div>
-            </section>
+                <p className="has-text-grey">
+                    <button className="button is-text" onClick={() => this.props.history.push('/signup')}>Sign Up</button>
+                </p>
+            </AuthContainer>
         );
     }
 }

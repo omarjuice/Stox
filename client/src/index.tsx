@@ -4,10 +4,13 @@ import { Provider } from 'mobx-react';
 import App from './App';
 import store from './store'
 import * as serviceWorker from './serviceWorker';
+import { BrowserRouter } from 'react-router-dom';
 
 const Root = (
     <Provider store={store}>
-        <App />
+        <BrowserRouter>
+            <App />
+        </BrowserRouter>
     </Provider>
 )
 
