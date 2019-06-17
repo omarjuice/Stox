@@ -1,19 +1,15 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
-class SearchItem extends Component<IEX.TickerSymbol> {
-    state = {
-        hovered: false
-    }
-    render() {
-        return (
-            <li className="list-item"
-                onMouseEnter={() => this.setState({ hovered: true })}
-                onMouseLeave={() => this.setState({ hovered: false })}>
-                {!this.state.hovered && <span className="has-text-weight-bold">{this.props.symbol}</span>}
-                {this.state.hovered && <span>{this.props.name}</span>}
-            </li>
-        );
-    }
+const SearchItem: React.FC<IEX.TickerSymbol> = ({ name, symbol }) => {
+    const [hovered, toggle] = useState(false)
+    return (
+        <li className="list-item is-hoverable"
+            onMouseEnter={() => toggle(true)}
+            onMouseLeave={() => toggle(false)}>
+            {!hovered && <span className="has-text-weight-bold">{symbol}</span>}
+            {hovered && <span>{name}</span>}
+        </li>
+    )
 }
 
 export default SearchItem;

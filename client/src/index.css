@@ -1,3 +1,7 @@
+.stocks-search{
+    margin-top: 5rem;
+
+}
 .stocks-search .list-item{
     display: flex;
     justify-content: space-between;
@@ -6,3 +10,4 @@
     max-height: 80vh;
     overflow: scroll;
 }
+

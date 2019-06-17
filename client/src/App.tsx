@@ -1,10 +1,11 @@
 import React from 'react';
 import Login from './components/Login';
 import store from './store';
-import { Route, Switch, RouteComponentProps, withRouter } from 'react-router-dom'
+import { Route, RouteComponentProps, withRouter } from 'react-router-dom'
 import { observer } from 'mobx-react';
 import Register from './components/Register';
 import Stocks from './components/Stocks';
+import Navbar from './components/Navbar';
 
 @observer
 class App extends React.Component<RouteComponentProps> {
@@ -24,11 +25,11 @@ class App extends React.Component<RouteComponentProps> {
   render() {
     return (
       <div className="App">
-        <Switch>
-          <Route path="/register" exact component={Register} />
-          <Route path="/stocks" exact component={Stocks} />
-          <Route path="/" exact component={Login} />
-        </Switch>
+        <Route component={Navbar} />
+        <Route path="/register" exact component={Register} />
+        <Route path="/stocks" exact component={Stocks} />
+        <Route path="/" exact component={Login} />
+
       </div>
     );
   }

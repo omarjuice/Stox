@@ -1,5 +1,6 @@
 import { observable, computed } from 'mobx';
 import { RootStore } from '.';
+import axios from 'axios';
 
 
 class Trie {
@@ -56,15 +57,28 @@ class Trie {
 }
 
 class Stocks {
+    @observable loading: boolean = false
     @observable input: string = ''
     trie: Trie = new Trie()
-    @computed get list() {
-        if (this.input.length) return this.trie.findStocks(this.input)
-        else return []
-    }
     root: RootStore
     constructor(store: RootStore) {
         this.root = store
+        this.loading = true
+        axios.get('https://api.iextrading.com/1.0/ref-data/symbols')
+            .then((response) => {
+                const data: IEX.TickerSymbol[] = response.data
+                for (const stock of data) {
+                    if (stock.isEnabled) {
+                        this.trie.add(stock.symbol, stock.name)
+                    }
+                }
+                this.loading = false
+            })
+    }
+
+    @computed get list() {
+        if (this.input.length) return this.trie.findStocks(this.input)
+        else return []
     }
 }
 
