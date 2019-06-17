@@ -3,7 +3,7 @@ import Login from './components/Login';
 import store from './store';
 import { Route, Switch, RouteComponentProps, withRouter } from 'react-router-dom'
 import { observer } from 'mobx-react';
-import SignUp from './components/Signup';
+import Register from './components/Register';
 import Stocks from './components/Stocks';
 
 @observer
@@ -15,7 +15,7 @@ class App extends React.Component<RouteComponentProps> {
         this.props.history.push('/stocks')
       }
     } else {
-      if (!['/', '/signup'].includes(this.props.location.pathname)) {
+      if (!['/', '/register'].includes(this.props.location.pathname)) {
         this.props.history.push('/')
       }
     }
@@ -25,7 +25,7 @@ class App extends React.Component<RouteComponentProps> {
     return (
       <div className="App">
         <Switch>
-          <Route path="/signup" exact component={SignUp} />
+          <Route path="/register" exact component={Register} />
           <Route path="/stocks" exact component={Stocks} />
           <Route path="/" exact component={Login} />
         </Switch>

@@ -63,7 +63,9 @@ export class User implements UserSchema.I {
             ("firstName", "lastName", password, email)
             VALUES ($1, $2, $3, $4)
             RETURNING id, "firstName", "lastName", email, "createdAt"
-        `, [data.firstName, data.lastName, password, data.email])
+        `, [data.firstName, data.lastName, password, data.email]).catch(() => {
+            throw new ApiError(`A user with the email ${data.email} already exists.`, 400)
+        })
 
 
         return new User(newUser)

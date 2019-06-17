@@ -6,51 +6,34 @@ import AuthContainer from './AuthContainer';
 
 
 
-@observer
-class Login extends React.Component<RouteComponentProps> {
-    state = {
-        email: "",
-        password: ""
-    }
-    handleChange = (type: string) => {
-        return (e: React.ChangeEvent<HTMLInputElement>) => {
-            this.setState({
-                [type]: e.target.value
-            })
-        }
-    }
-    handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const { email, password } = this.state
-        await store.auth.login(email, password)
-        if (store.auth.authenticated) {
-            this.props.history.push('/stocks')
-        }
-    }
-    render() {
-        return (
-            <AuthContainer type="login">
-                <div className="box">
-                    <form onSubmit={this.handleSubmit}>
-                        <div className="field">
-                            <div className="control">
-                                <input onChange={this.handleChange('email')} value={this.state.email} className="input is-large" type="email" placeholder="Your Email" autoFocus={true} />
-                            </div>
+
+const Login: React.FC<RouteComponentProps> = observer(({ history }) => {
+    const { forms } = store
+    const { login } = forms
+    return (
+        <AuthContainer type="login">
+            <div className="box">
+                <form onSubmit={e => forms.submitLogin(e, history)}>
+                    <div className="field">
+                        <div className="control">
+                            <input onChange={(e) => login.set('email', e.target.value)} value={login.email} className="input is-large" type="email" placeholder="Your Email" autoFocus={true} />
                         </div>
-                        <div className="field">
-                            <div className="control">
-                                <input onChange={this.handleChange('password')} value={this.state.password} className="input is-large" type="password" placeholder="Your Password" />
-                            </div>
+                        <p className="help is-danger">{login.errors.email}</p>
+                    </div>
+                    <div className="field">
+                        <div className="control">
+                            <input onChange={e => login.set('password', e.target.value)} value={login.password} className="input is-large" type="password" placeholder="Your Password" />
                         </div>
-                        <button className="button is-block is-info is-large is-fullwidth">Login</button>
-                    </form>
-                </div>
-                <p className="has-text-grey">
-                    <button className="button is-text" onClick={() => this.props.history.push('/signup')}>Sign Up</button>
-                </p>
-            </AuthContainer>
-        );
-    }
-}
+                        <p className="help is-danger">{login.errors.password}</p>
+                    </div>
+                    <button className="button is-block is-info is-large is-fullwidth">Login</button>
+                </form>
+            </div>
+            <p className="has-text-grey">
+                <button className="button is-text" onClick={() => history.push('/register')}>Sign Up</button>
+            </p>
+        </AuthContainer>
+    );
+})
 
 export default Login;
