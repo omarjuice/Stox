@@ -13,24 +13,25 @@ const Navbar: React.FC<RouteComponentProps> = observer(({ history }) => {
                     <img src="http://www.pngmart.com/files/7/Stocks-PNG-File.png" width="50" height="100" alt="stox" />Stox
                 </Link>
 
-                <button
+                <a role="button"
+                    href="#/"
                     onClick={() => toggle(!active)}
                     className={`navbar-burger burger ${active && 'is-active'} anchor`}
                     aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
                     <span aria-hidden="true"></span>
                     <span aria-hidden="true"></span>
                     <span aria-hidden="true"></span>
-                </button>
+                </a>
             </div>
 
             <div id="navbarBasicExample" className={`navbar-menu ${active && 'is-active'}`}>
                 {store.auth.authenticated && (
                     <div className="navbar-start">
-                        <a className="navbar-item" href="#">
+                        <a className="navbar-item" href="#/">
                             Portfolio
                         </a>
 
-                        <a className="navbar-item" href="#">
+                        <a className="navbar-item" href="#/">
                             Transactions
                         </a>
                     </div>

@@ -28,7 +28,7 @@ class Forms {
             this.login.clear()
             history.push('/stocks')
         } else {
-            this.login.errors.email = this.root.auth.error
+            this.login.errors.main = this.root.auth.error
         }
     }
     @action async submitRegister(e: React.FormEvent, history: History) {
@@ -47,7 +47,7 @@ class Forms {
             this.register.clear()
             history.push('/stocks')
         } else {
-            this.register.errors.email = this.root.auth.error
+            this.register.errors.main = this.root.auth.error
         }
     }
 }
