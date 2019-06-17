@@ -5,6 +5,7 @@ import App from './App';
 import store from './store'
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter } from 'react-router-dom';
+import './index.css'
 
 const Root = (
     <Provider store={store}>

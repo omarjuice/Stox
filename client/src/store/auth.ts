@@ -1,5 +1,5 @@
 import { observable } from "mobx";
-import axios, { AxiosError } from "axios"
+import axios, { AxiosError, AxiosInstance } from "axios"
 import { History } from "history";
 import { RootStore } from ".";
 
@@ -10,28 +10,20 @@ class Auth {
     @observable error: string | null = null;
     @observable user: null | User
     @observable authenticated: boolean = false
+    axios: AxiosInstance
     main: number;
     root: RootStore
     constructor(store: RootStore) {
         this.root = store
-        if (process.env.NODE_ENV === 'development') {
-            axios.defaults.baseURL = 'http://localhost:3001/api'
-        }
-        axios.defaults.withCredentials = true;
-        this.loading = true;
-        axios.get('/')
-            .then(res => {
-                this.status = res.status;
-                this.data = res.data;
-                this.loading = false
-            })
-            .catch(e => {
-                this.error = e;
-                this.loading = false
-            })
+
+        this.axios = axios.create({
+            baseURL: process.env.NODE_ENV === 'development' ? 'http://localhost:3001/api/auth' : '/api/auth',
+            withCredentials: true
+        })
+
     }
     async register(details: User) {
-        const response = await axios.post('/auth/register', details)
+        const response = await this.axios.post('/register', details)
             .catch((e: AxiosError) => {
                 this.error = e.response.data
                 return { data: null, status: e.response.status }
@@ -45,7 +37,7 @@ class Auth {
         }
     }
     async login(email: string, password: string) {
-        const response = await axios.post('/auth/login', { email, password })
+        const response = await this.axios.post('/login', { email, password })
             .catch((e: AxiosError) => {
                 this.error = e.response.data
                 return { data: null, status: e.response.status }
@@ -60,13 +52,13 @@ class Auth {
 
     }
     async logout(history: History) {
-        await axios.post('/auth/logout')
+        await this.axios.post('/logout')
         this.authenticated = false
         this.user = null
         history.push('/')
     }
     async me() {
-        const response = await axios.get('/auth/me')
+        const response = await this.axios.get('/me')
         const user: User = response.data
         if (user && user.id) {
             this.user = user

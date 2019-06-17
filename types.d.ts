@@ -6,3 +6,14 @@ declare interface User {
     password?: string
     createdAt?: Date
 }
+
+declare namespace IEX {
+    interface TickerSymbol {
+        symbol: string
+        name: string
+        date?: string
+        isEnabled?: boolean
+        type?: string
+        iexId?: string
+    }
+}

@@ -1,0 +1,8 @@
+.stocks-search .list-item{
+    display: flex;
+    justify-content: space-between;
+}
+.stocks-search .list{
+    max-height: 80vh;
+    overflow: scroll;
+}
