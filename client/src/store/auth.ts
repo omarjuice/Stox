@@ -1,5 +1,5 @@
 import { observable } from "mobx";
-import axios from "axios"
+import axios, { AxiosError } from "axios"
 import { History } from "history";
 import { RootStore } from ".";
 
@@ -32,7 +32,7 @@ class Auth {
     }
     async register(details: User) {
         const response = await axios.post('/auth/register', details)
-            .catch(e => {
+            .catch((e: AxiosError) => {
                 this.error = e.response.data
                 return { data: null, status: e.response.status }
             })
@@ -46,7 +46,7 @@ class Auth {
     }
     async login(email: string, password: string) {
         const response = await axios.post('/auth/login', { email, password })
-            .catch(e => {
+            .catch((e: AxiosError) => {
                 this.error = e.response.data
                 return { data: null, status: e.response.status }
             })
