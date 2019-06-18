@@ -7,5 +7,7 @@ export const seedUser: UserSchema.Create = {
     password: 'password'
 }
 export default async function seed() {
-    await User.create(seedUser)
+    const user: User = await User.create(seedUser)
+
+    return user
 }

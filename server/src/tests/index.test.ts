@@ -1,5 +1,5 @@
 import expect from 'expect';
-import request, { SuperTest } from 'supertest';
+import request from 'supertest';
 import app from '../'
 import db, { dropTables, createTables } from '../data/'
 import { User } from '../data/'

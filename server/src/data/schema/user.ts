@@ -1,4 +1,3 @@
-/// <reference path="./schema.d.ts" />
 import bcrypt from 'bcryptjs'
 import { validate } from 'email-validator'
 
@@ -12,6 +11,7 @@ export const userSchema: DBSchema = {
         password CHAR(60) NOT NULL,
         "firstName" VARCHAR(40) NOT NULL,
         "lastName" VARCHAR(40) NOT NULL,
+        balance INTEGER NOT NULL DEFAULT 5000000,
         "createdAt" TIMESTAMP DEFAULT NOW()
     )`,
     drop: `DROP TABLE IF EXISTS users`
@@ -27,6 +27,7 @@ export class User implements UserSchema.I {
     password?: string
     email: string
     createdAt?: Date
+    balance?: number
     constructor(data: UserSchema.DB) {
         this.id = data.id;
         this.firstName = data.firstName;
@@ -34,11 +35,12 @@ export class User implements UserSchema.I {
         this.password = data.password
         this.email = data.email
         this.createdAt = data.createdAt
+        this.balance = data.balance / 1000
     }
     static async findById(id: number): Promise<null | User> {
         const { rows: [user] } = await db.query(`
             SELECT 
-                id, "firstName", "lastName", email, "createdAt" 
+                id, "firstName", "lastName", email, "createdAt", balance 
             FROM users
             WHERE id = $1`, [id])
         if (!user) {
@@ -62,7 +64,7 @@ export class User implements UserSchema.I {
                 users
             ("firstName", "lastName", password, email)
             VALUES ($1, $2, $3, $4)
-            RETURNING id, "firstName", "lastName", email, "createdAt"
+            RETURNING id, "firstName", "lastName", email, "createdAt", balance
         `, [data.firstName, data.lastName, password, data.email]).catch(() => {
             throw new ApiError(`A user with the email ${data.email} already exists.`, 400)
         })
@@ -75,7 +77,7 @@ export class User implements UserSchema.I {
         if (!password) throw new ApiError(`Missing field password`, 400)
         const { rows: [user] } = await db.query(`
             SELECT 
-                email, id, "firstName", "lastName", password, "createdAt"
+                email, id, "firstName", "lastName", password, "createdAt", balance
             FROM users
             WHERE email = $1
         `, [email])
@@ -90,5 +92,26 @@ export class User implements UserSchema.I {
             throw new ApiError(`That is not the correct password for ${email}`, 401)
 
         }
+    }
+    static async updateBalance(id: number, updateAmount: number, type: transactionType): Promise<User | null> {
+        if (type !== 'BUY' && type !== 'SELL') throw new ApiError(`type must be "BUY" or "SELL"`, 400)
+        const { rows: [user] } = await db.query(`
+            UPDATE users
+                SET balance = balance + $2
+            WHERE id = $1 AND balance > $2
+            RETURNING id, "firstName", "lastName", email, "createdAt", balance
+        `, [id, updateAmount * (type === 'BUY' ? -1000 : 1000)])
+        if (!user) return null
+        return new User(user)
+    }
+    async updateBalance(updateAmount: number, type: transactionType): Promise<number> {
+        if (type !== 'BUY' && type !== 'SELL') throw new ApiError(`type must be "BUY" or "SELL"`, 400)
+        const { rows: [{ balance }] } = await db.query(`
+            UPDATE users
+                SET balance = balance + $2
+            WHERE id = $1
+            RETURNING balance
+        `, [this.id, updateAmount * (type === 'BUY' ? -1000 : 1000)])
+        return this.balance = balance / 1000
     }
 }
