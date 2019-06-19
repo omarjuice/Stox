@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { observer } from 'mobx-react';
-import store from '../store';
+import store from '../../store';
 import SearchItem from './SearchItem';
 
 const SearchBar: React.FC = observer(() => {

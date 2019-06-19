@@ -1,12 +1,12 @@
 import React from 'react';
-import Login from './components/Login';
-import store from './store';
 import { Route, RouteComponentProps, withRouter } from 'react-router-dom'
 import { observer } from 'mobx-react';
-import Register from './components/Register';
+import store from './store';
+import Login from './components/auth/Login';
+import Register from './components/auth/Register';
 import Stocks from './components/Stocks';
 import Navbar from './components/Navbar';
-import Search from './components/Search';
+import Search from './components/search';
 
 @observer
 class App extends React.Component<RouteComponentProps> {

@@ -1,5 +1,5 @@
 import React from 'react';
-import store from '../store'
+import store from '../../store'
 import { observer } from 'mobx-react';
 import { RouteComponentProps } from 'react-router';
 import AuthContainer from './AuthContainer';

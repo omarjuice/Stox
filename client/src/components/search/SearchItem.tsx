@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import store from '../store';
+import store from '../../store';
 
 const SearchItem: React.FC<IEX.TickerSymbol> = ({ name, symbol }) => {
     const [hovered, toggle] = useState(false)

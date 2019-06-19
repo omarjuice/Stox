@@ -70,6 +70,7 @@ type last = {
     error: string | null
     price?: number
     time?: number
+    size?: number
 }
 
 class StockData {
@@ -105,8 +106,7 @@ class StockData {
             .then(res => {
                 const data: IEX.LAST[] = res.data
 
-                this.last.price = data[0].price
-                this.last.time = data[0].time
+                this.last = { ...this.last, ...data[0] }
                 this.last.error = null
                 this.last.loading = false
             }).catch((e: AxiosError) => {
@@ -147,8 +147,8 @@ class StocksSearch {
         if (this.input.length) return this.trie.findStocks(this.input)
         else return []
     }
-    @action addData(symbol: string, name: string) {
-        if (!this.cache[symbol]) {
+    @action addData(symbol: string, name: string, reset: boolean = false) {
+        if (!this.cache[symbol] || reset) {
             this.cache[symbol] = new StockData(symbol, name, this)
         }
         this.view = this.cache[symbol]
