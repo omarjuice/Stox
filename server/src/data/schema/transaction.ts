@@ -44,7 +44,7 @@ export class Transaction implements ITransaction {
         return new Transaction(transaction)
     }
     static async create(data: TransactionSchema.Create): Promise<Transaction> {
-        const missingFields = [!data.userId && 'userId', !data.symbol && 'symbol', !data.price && 'price', !data.quantity && 'quantity', !data.type && 'type']
+        const missingFields = [!data.userId && 'userId', !data.symbol && 'symbol', !data.price && 'price', !('quantity' in data) && 'quantity', !data.type && 'type']
             .filter(field => !!field);
         if (missingFields.length) {
             throw new ApiError(`Missing fields ${missingFields.join(', ')}`, 400)

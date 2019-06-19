@@ -79,7 +79,7 @@ export class PortfolioStock implements IPortfolioStock {
     async destroy() {
         await db.query(`
             DELETE FROM portfolio_stocks WHERE "userId" = $1 AND symbol = $2
-        `)
+        `, [this.userId, this.symbol])
     }
 
 }

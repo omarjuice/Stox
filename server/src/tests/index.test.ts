@@ -1,18 +1,28 @@
+/// <reference path="../data/schema.d.ts" />
+/// <reference path="../../../types.d.ts" />
+
+
 import expect from 'expect';
 import request from 'supertest';
 import app from '../'
 import db, { dropTables, createTables } from '../data/'
-import { User } from '../data/'
+import { User, PortfolioStock, Transaction } from '../data/'
 import seed, { seedUser } from './seed'
 
 let agent: request.SuperTest<any> = request.agent(app);
-
+let user: User;
 beforeEach(async () => {
     await dropTables()
     await createTables()
-    await seed()
+    user = await seed()
     agent = request.agent(app)
 })
+const login = async () => {
+    await agent.post('/api/auth/login').send({
+        email: seedUser.email,
+        password: seedUser.password
+    })
+}
 
 
 describe('API', () => {
@@ -100,4 +110,157 @@ describe('API', () => {
 
         })
     })
+    describe('/portfolio', () => {
+
+        it('Should not work if the user is not authenticated', done => {
+            agent.get('/api/portfolio')
+                .expect(401)
+                .end(done)
+        })
+        it('Returns the users portfolio', async () => {
+            const stock1: PortfolioStockSchema.Create = {
+                userId: 1,
+                symbol: 'GO',
+                quantity: 5
+            }
+            const stock2: PortfolioStockSchema.Create = {
+                userId: 1,
+                symbol: 'D',
+                quantity: 10
+            }
+            await PortfolioStock.add(stock1)
+            await PortfolioStock.add(stock2)
+            await login()
+            const { body } = await agent.get('/api/portfolio')
+            expect(body.length).toBe(2)
+            body.forEach((item: PortfolioStockSchema.DB) => {
+                expect(item.userId).toBe(user.id)
+            })
+
+        })
+    })
+    describe.only('/transactions', () => {
+        it('Should not work if the user is not authenticated', done => {
+            agent.get('/api/transactions/history')
+                .expect(401)
+                .end(done)
+        })
+        const stock1: PortfolioStockSchema.Create = {
+            userId: 1,
+            symbol: 'GO',
+            quantity: 5
+        }
+        const stock2: PortfolioStockSchema.Create = {
+            userId: 1,
+            symbol: 'D',
+            quantity: 10
+        }
+        const transaction1: TransactionSchema.Create = {
+            ...stock1,
+            price: 800,
+            type: 'BUY'
+        }
+        const transaction2: TransactionSchema.Create = {
+            ...stock2,
+            price: 100,
+            type: 'BUY'
+        }
+        describe('Buying shares', () => {
+
+            it('user purchase updates balance and user portfolio', async () => {
+                await login()
+                {
+                    const res = await agent.post('/api/transactions/buy').send(transaction1)
+                    const response: TransactionResponse = res.body
+                    expect(response.portfolio.quantity).toBe(stock1.quantity)
+                    expect(response.portfolio.symbol).toBe(stock1.symbol)
+                    expect(response.balance).toBe(1000)
+                    expect(response.transaction.type).toBe(transaction1.type)
+                }
+                {
+                    const res = await agent.post('/api/transactions/buy').send(transaction2)
+                    const response: TransactionResponse = res.body
+                    expect(response.portfolio.quantity).toBe(stock2.quantity)
+                    expect(response.portfolio.symbol).toBe(stock2.symbol)
+                    expect(response.balance).toBe(0)
+                    expect(response.transaction.type).toBe(transaction2.type)
+                }
+                {
+                    const res = await agent.post('/api/transactions/buy').send(transaction1)
+                    expect(res.error).toBeTruthy()
+                    expect(res.status).toBeTruthy()
+                }
+                {
+                    const res = await agent.get('/api/transactions/history')
+                    const response: Transaction[] = res.body
+                    expect(response.length).toBe(2)
+                }
+                {
+                    const res = await agent.get('/api/portfolio')
+                    const response: PortfolioStock[] = res.body
+                    expect(response.length).toBe(2)
+                }
+            })
+
+        })
+        describe('Full Flow', () => {
+            it('user sales updates balance and portfolio, user cannot sell what they dont have', async () => {
+                await login()
+                await agent.post('/api/transactions/buy').send(transaction1)
+                await agent.post('/api/transactions/buy').send(transaction2)
+                {
+                    const sale1: TransactionSchema.Create = { ...transaction1, type: "SELL", quantity: transaction1.quantity - 3, price: 900 }
+                    const res = await agent.post('/api/transactions/sell').send(sale1)
+                    const response: TransactionResponse = res.body
+                    expect(response.portfolio.quantity).toBe(stock1.quantity - sale1.quantity)
+                    expect(response.portfolio.symbol).toBe(sale1.symbol)
+                    expect(response.balance).toBe(1800)
+                    expect(response.transaction.type).toBe(sale1.type)
+                }
+                {
+                    const sale1: TransactionSchema.Create = { ...transaction1, type: "SELL", quantity: 3, price: 600 }
+                    const res = await agent.post('/api/transactions/sell').send(sale1)
+                    const response: TransactionResponse = res.body
+                    expect(response.portfolio.quantity).toBe(0)
+                    expect(response.portfolio.symbol).toBe(sale1.symbol)
+                    expect(response.balance).toBe(3600)
+                    expect(response.transaction.type).toBe(sale1.type)
+                }
+                {
+                    const res = await agent.get('/api/portfolio')
+                    const portfolio: PortfolioStock[] = res.body;
+                    expect(portfolio.length).toBe(1)
+                }
+                {
+                    const sale1: TransactionSchema.Create = { ...transaction1, type: "SELL", quantity: 3, price: 600 }
+                    const res = await agent.post('/api/transactions/sell').send(sale1)
+                    expect(res.error).toBeTruthy
+                    expect(res.status).toBe(400)
+                }
+                {
+                    const sale2: TransactionSchema.Create = { ...transaction2, type: "SELL", quantity: 100, price: 500 }
+                    const res = await agent.post('/api/transactions/sell').send(sale2)
+                    const response: TransactionResponse = res.body
+                    expect(response.portfolio.quantity).toBe(0)
+                    expect(response.portfolio.symbol).toBe(sale2.symbol)
+                    expect(response.balance).toBe(8600)
+                    expect(response.transaction.type).toBe(sale2.type)
+                    expect(response.transaction.quantity).toBe(10)
+
+                }
+                {
+                    const res = await agent.get('/api/portfolio')
+                    const portfolio: PortfolioStock[] = res.body;
+                    expect(portfolio.length).toBe(0)
+                }
+                {
+                    const res = await agent.get('/api/transactions/history')
+                    const response: Transaction[] = res.body
+                    console.log(response)
+                    expect(response.length).toBe(5)
+                }
+            })
+        })
+    })
+
 })

@@ -1,5 +1,4 @@
 import expect from 'expect';
-import db from '../data/'
 import { User, Transaction, PortfolioStock, dropTables, createTables } from '../data/'
 import seed from './seed';
 let user: User;
@@ -142,7 +141,7 @@ describe('DATABASE', () => {
 
         })
     })
-    describe.only('Transactions with portfolio_stocks', async () => {
+    describe('Transactions with portfolio_stocks', async () => {
         const stock = {
             userId: 1,
             symbol: 'FB',
