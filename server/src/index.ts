@@ -52,7 +52,7 @@ app.use((error: ApiError, req, res, next) => {
 db.connect()
     .then(async () => {
         await createTables()
-        if (developmentEnv) await seed()
+        // if (developmentEnv) await seed()
         app.listen(PORT, () => {
             console.log(`Listening on PORT ${PORT}`)
         })

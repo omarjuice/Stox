@@ -1,13 +1,13 @@
-.stocks-search{
-    margin-top: 5rem;
+/* body, html, #root{
+    min-height: 100vh;
 
+} */
+.search{
+    margin-top: 12.5vh;
 }
-.stocks-search .list-item{
-    display: flex;
-    justify-content: space-between;
-}
-.stocks-search .list{
-    max-height: 80vh;
+
+.search .list{
+    max-height: 77.5vh;
     overflow: scroll;
 }
 

@@ -12,6 +12,11 @@ const Navbar: React.FC<RouteComponentProps> = observer(({ history }) => {
                 <Link className="navbar-item" to={store.auth.authenticated ? "/stocks" : "/"} >
                     <img src="http://www.pngmart.com/files/7/Stocks-PNG-File.png" width="50" height="100" alt="stox" />Stox
                 </Link>
+                {store.auth.authenticated && (
+                    <Link className="navbar-item" to="/search">
+                        <i className="fas fa-search fa-lg"></i>
+                    </Link>
+                )}
 
                 <a role="button"
                     href="#/"
@@ -34,6 +39,7 @@ const Navbar: React.FC<RouteComponentProps> = observer(({ history }) => {
                         <a className="navbar-item" href="#/">
                             Transactions
                         </a>
+
                     </div>
                 )}
                 <div className="navbar-end">

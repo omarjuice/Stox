@@ -1,27 +1,22 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import store from '../store';
-import SearchItem from './SearchItem';
+
+import SearchBar from './SearchBar';
+import SearchView from './SearchView';
 
 const Search: React.FC = observer(() => {
     return (
-        <div className="stocks-search">
-            <div className="field">
-                <div className="control has-icons-right">
-                    <input className="input is-large" type="text" placeholder="Search by ticker symbol"
-
-                        onChange={(e) => store.stocks.input = e.target.value.toUpperCase()} value={store.stocks.input} />
-                    {store.stocks.loading && <span className="icon is-small is-right">
-                        <i className="fas fa-circle-notch fa-spin"></i>
-                    </span>}
+        <div className="container search">
+            <div className="columns">
+                <div className="column is-half">
+                    <SearchBar />
+                </div>
+                <div className="column is-half">
+                    <SearchView />
                 </div>
             </div>
-            <div className="list">
-                {store.stocks.list.map((stock, i) => {
-                    return <SearchItem key={i}  {...stock} />
-                })}
-            </div>
         </div>
+
     );
 })
 

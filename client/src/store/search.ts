@@ -1,6 +1,8 @@
 import { observable, computed } from 'mobx';
 import { RootStore } from '.';
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
+import { AxiosError } from 'axios';
+import { action } from 'mobx';
 
 
 class Trie {
@@ -55,16 +57,81 @@ class Trie {
         return stocks;
     };
 }
+type ohlc = {
+    loading: boolean
+    error: string | null
+    open?: number
+    high?: number
+    low?: number
+    close?: number
+}
+type last = {
+    loading: boolean
+    error: string | null
+    price?: number
+    time?: number
+}
 
-class Stocks {
+class StockData {
+    @observable symbol: string
+    @observable name: string
+    @observable ohlc: ohlc = {
+        loading: true,
+        error: null
+    }
+    @observable last: last = {
+        loading: true,
+        error: null
+    }
+    search: StocksSearch
+    constructor(symbol: string, name: string, search: StocksSearch) {
+        this.symbol = symbol
+        this.name = name
+        this.search = search
+
+        search.axios.get(`stock/${symbol}/ohlc`)
+            .then(res => {
+                const data: IEX.OHLC = res.data
+                this.ohlc.open = data.open.price
+                this.ohlc.close = data.close.price
+                this.ohlc.high = data.high
+                this.ohlc.low = data.low
+                this.ohlc.loading = false
+            }).catch((e: AxiosError) => {
+                this.ohlc.error = e.response.data
+                this.ohlc.loading = false
+            })
+        search.axios.get(`tops/last?symbols=${symbol}`)
+            .then(res => {
+                const data: IEX.LAST[] = res.data
+
+                this.last.price = data[0].price
+                this.last.time = data[0].time
+                this.last.error = null
+                this.last.loading = false
+            }).catch((e: AxiosError) => {
+                this.last.loading = false
+                this.last.error = e.response.data
+            })
+    }
+
+}
+
+class StocksSearch {
     @observable loading: boolean = false
     @observable input: string = ''
+    @observable view: StockData
+    cache: { [key: string]: StockData } = {}
+    axios: AxiosInstance
     trie: Trie = new Trie()
     root: RootStore
     constructor(store: RootStore) {
         this.root = store
         this.loading = true
-        axios.get('https://api.iextrading.com/1.0/ref-data/symbols')
+        this.axios = axios.create({
+            baseURL: 'https://api.iextrading.com/1.0/'
+        })
+        this.axios.get('ref-data/symbols')
             .then((response) => {
                 const data: IEX.TickerSymbol[] = response.data
                 for (const stock of data) {
@@ -80,10 +147,16 @@ class Stocks {
         if (this.input.length) return this.trie.findStocks(this.input)
         else return []
     }
+    @action addData(symbol: string, name: string) {
+        if (!this.cache[symbol]) {
+            this.cache[symbol] = new StockData(symbol, name, this)
+        }
+        this.view = this.cache[symbol]
+    }
 }
 
 
 
 
 
-export default Stocks
+export default StocksSearch

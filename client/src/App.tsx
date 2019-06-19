@@ -6,13 +6,15 @@ import { observer } from 'mobx-react';
 import Register from './components/Register';
 import Stocks from './components/Stocks';
 import Navbar from './components/Navbar';
+import Search from './components/Search';
 
 @observer
 class App extends React.Component<RouteComponentProps> {
   async componentDidMount() {
     await store.auth.me()
     if (store.auth.authenticated) {
-      if (this.props.location.pathname !== '/stocks') {
+
+      if (!['/stocks', '/portfolio', 'transactions', '/search'].includes(this.props.location.pathname)) {
         this.props.history.push('/stocks')
       }
     } else {
@@ -28,6 +30,7 @@ class App extends React.Component<RouteComponentProps> {
         <Route component={Navbar} />
         <Route path="/register" exact component={Register} />
         <Route path="/stocks" exact component={Stocks} />
+        <Route path="/search" exact component={Search} />
         <Route path="/" exact component={Login} />
 
       </div>
