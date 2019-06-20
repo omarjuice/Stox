@@ -1,15 +1,22 @@
 
 
-import React from 'react';
+import React, { useState } from 'react';
 import moment from 'moment'
 import { observer } from 'mobx-react';
 import store from '../../store';
 import { zeroPad, compare } from '../../utils';
+import BuyForm from './BuyForm';
 
 const SearchView: React.FC = observer(() => {
+
+
     const { view } = store.search
+    const [isBuying, toggle] = useState(false)
+
 
     if (view) {
+
+
         const comparisonColor = compare(view.last.price, view.ohlc.open)
         return (
             <div className="card">
@@ -63,6 +70,15 @@ const SearchView: React.FC = observer(() => {
                                 ) : <i className="fas fa-circle-notch fa-spin"></i>}
                             </div>
                         </div>
+                        {view.last.price && (<div className="has-text-centered">
+                            <button className={`button is-${isBuying ? 'danger' : 'info'}`} disabled={isBuying && store.transactions.pendingTransaction.loading}
+                                onClick={() => { store.transactions.createTransaction({ symbol: view.symbol, type: 'BUY', price: view.last.price, quantity: 0 }); toggle(!isBuying) }}>
+                                {isBuying ? 'Cancel' : 'Buy'}
+                            </button>
+                            {isBuying && (
+                                <BuyForm newTransaction={store.transactions.pendingTransaction} />
+                            )}
+                        </div>)}
                     </div>
                 </div>
             </div>

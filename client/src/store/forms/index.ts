@@ -26,7 +26,7 @@ class Forms {
         await this.root.auth.login(email, password)
         if (this.root.auth.authenticated) {
             this.login.clear()
-            history.push('/stocks')
+            history.push('/portfolio')
         } else {
             this.login.errors.main = this.root.auth.error
         }
@@ -45,7 +45,7 @@ class Forms {
         await this.root.auth.register({ email, password, firstName, lastName })
         if (this.root.auth.authenticated) {
             this.register.clear()
-            history.push('/stocks')
+            history.push('/portfolio')
         } else {
             this.register.errors.main = this.root.auth.error
         }

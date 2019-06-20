@@ -1,13 +1,15 @@
-/* body, html, #root{
-    min-height: 100vh;
 
-} */
-.search{
-    margin-top: 12.5vh;
-}
 
 .search .list{
     max-height: 77.5vh;
     overflow: scroll;
 }
+.search .list .list-item{
+    height: 2.5rem;
+}
 
+.brand{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

@@ -55,7 +55,7 @@ export class Transaction implements ITransaction {
             ("userId", symbol, price, quantity, type)
             values ($1, $2, $3, $4, $5)
             RETURNING *
-        `, [data.userId, data.symbol, data.price * 1000, data.quantity, data.type]).catch(e => {
+        `, [data.userId, data.symbol, Math.round(data.price * 1000), data.quantity, data.type]).catch(e => {
             console.log(e)
             throw new ApiError('Transaction creation error', 500)
         })

@@ -40,8 +40,8 @@ declare namespace IEX {
 declare type transactionType = 'BUY' | 'SELL'
 
 declare interface ITransaction {
-    id: number
-    userId: number
+    id?: number
+    userId?: number
     symbol: string
     price: number
     quantity: number
@@ -53,7 +53,6 @@ declare interface IPortfolioStock {
     userId: number
     symbol: string
     quantity: number
-    createdAt: Date
     lastUpdated: Date
 }
 declare type Transaction = ITransaction
@@ -66,3 +65,8 @@ declare type TransactionResponse = {
     transaction: Transaction
 }
 
+declare type Purchase = {
+    symbol: string
+    quantity: number
+    price: number
+}

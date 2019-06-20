@@ -2,6 +2,7 @@ import { observable } from "mobx";
 import axios, { AxiosError, AxiosInstance } from "axios"
 import { History } from "history";
 import { RootStore } from ".";
+import { round } from "../utils";
 
 class Auth {
     @observable loading: boolean = false;
@@ -29,6 +30,7 @@ class Auth {
                 return { data: null, status: e.response.status }
             })
         this.user = response.data;
+        response.data.balance = round(response.data.balance)
         this.status = response.status;
         if (!this.user) {
             this.authenticated = false
@@ -42,6 +44,7 @@ class Auth {
                 this.error = e.response.data
                 return { data: null, status: e.response.status }
             })
+        response.data.balance = round(response.data.balance)
         this.user = response.data;
         this.status = response.status
         if (!this.user) {
@@ -62,6 +65,7 @@ class Auth {
         const user: User = response.data
         if (user && user.id) {
             this.user = user
+            this.user.balance = round(this.user.balance)
             this.authenticated = true
         } else {
             this.user = null

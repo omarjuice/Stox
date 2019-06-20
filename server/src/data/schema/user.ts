@@ -100,7 +100,7 @@ export class User implements UserSchema.I {
                 SET balance = balance + $2
             WHERE id = $1 AND balance > $2
             RETURNING id, "firstName", "lastName", email, "createdAt", balance
-        `, [id, updateAmount * (type === 'BUY' ? -1000 : 1000)])
+        `, [id, Math.round(updateAmount * (type === 'BUY' ? -1000 : 1000))])
         if (!user) return null
         return new User(user)
     }
@@ -111,7 +111,7 @@ export class User implements UserSchema.I {
                 SET balance = balance + $2
             WHERE id = $1
             RETURNING balance
-        `, [this.id, updateAmount * (type === 'BUY' ? -1000 : 1000)])
+        `, [this.id, Math.round(updateAmount * (type === 'BUY' ? -1000 : 1000))])
         return this.balance = balance / 1000
     }
 }

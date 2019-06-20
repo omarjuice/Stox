@@ -19,3 +19,8 @@ export const compare = (val1: number, val2: number) => {
     if (val2 > val1) return 'danger'
     return 'grey'
 }
+
+export const round = (num: number) => {
+    const rounded = Math.round(num * 100) / 100
+    return rounded
+}

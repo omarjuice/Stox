@@ -7,8 +7,7 @@ export const portfolioStockSchema: DBSchema = {
         "userId" INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
         symbol VARCHAR(5) NOT NULL,
         quantity INTEGER NOT NULL,
-        "createdAt" TIMESTAMP DEFAULT NOW(),
-        "lastUpdated" TIMESTAMP DEFAULT NULL,
+        "lastUpdated" TIMESTAMP DEFAULT NOW(),
         PRIMARY KEY("userId", symbol)
     )`,
     drop: `DROP TABLE IF EXISTS portfolio_stocks`
@@ -18,14 +17,13 @@ export class PortfolioStock implements IPortfolioStock {
     userId: number
     symbol: string
     quantity: number
-    createdAt: Date
     lastUpdated: Date
     constructor(data: PortfolioStockSchema.DB) {
         this.userId = data.userId
         this.symbol = data.symbol
         this.quantity = data.quantity
-        this.createdAt = data.createdAt
         this.userId = data.userId
+        this.lastUpdated = data.lastUpdated
     }
     static async add(stock: PortfolioStockSchema.Create): Promise<PortfolioStock> {
         const { rows: [portfolioStock] } = await db.query(`
@@ -59,6 +57,7 @@ export class PortfolioStock implements IPortfolioStock {
                 *
             FROM portfolio_stocks
             WHERE "userId" = $1
+            ORDER BY "lastUpdated" DESC
         `, [userId]);
 
         return portfolioStocks
@@ -69,7 +68,8 @@ export class PortfolioStock implements IPortfolioStock {
                 SET quantity = CASE
                     WHEN quantity > $3 THEN quantity - $3
                     WHEN quantity <= $3 THEN 0
-                    END 
+                    END,
+                    "lastUpdated" = NOW()
             WHERE "userId" = $1 AND symbol = $2
             RETURNING quantity
         `, [this.userId, this.symbol, sellQuantity])

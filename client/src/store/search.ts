@@ -105,7 +105,6 @@ class StockData {
         search.axios.get(`tops/last?symbols=${symbol}`)
             .then(res => {
                 const data: IEX.LAST[] = res.data
-
                 this.last = { ...this.last, ...data[0] }
                 this.last.error = null
                 this.last.loading = false
@@ -135,7 +134,7 @@ class StocksSearch {
             .then((response) => {
                 const data: IEX.TickerSymbol[] = response.data
                 for (const stock of data) {
-                    if (stock.isEnabled) {
+                    if (stock.isEnabled && stock.name) {
                         this.trie.add(stock.symbol, stock.name)
                     }
                 }

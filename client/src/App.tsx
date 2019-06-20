@@ -7,6 +7,8 @@ import Register from './components/auth/Register';
 import Stocks from './components/Stocks';
 import Navbar from './components/Navbar';
 import Search from './components/search';
+import Portfolio from './components/portfolio';
+import Transactions from './components/transactions';
 
 @observer
 class App extends React.Component<RouteComponentProps> {
@@ -14,7 +16,7 @@ class App extends React.Component<RouteComponentProps> {
     await store.auth.me()
     if (store.auth.authenticated) {
 
-      if (!['/stocks', '/portfolio', 'transactions', '/search'].includes(this.props.location.pathname)) {
+      if (!['/stocks', '/portfolio', '/transactions', '/search'].includes(this.props.location.pathname)) {
         this.props.history.push('/stocks')
       }
     } else {
@@ -31,6 +33,8 @@ class App extends React.Component<RouteComponentProps> {
         <Route path="/register" exact component={Register} />
         <Route path="/stocks" exact component={Stocks} />
         <Route path="/search" exact component={Search} />
+        <Route path="/portfolio" exact component={Portfolio} />
+        <Route path="/transactions" exact component={Transactions} />
         <Route path="/" exact component={Login} />
 
       </div>

@@ -10,8 +10,19 @@ const Navbar: React.FC<RouteComponentProps> = observer(({ history }) => {
         <nav className="navbar is-fixed-top" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">
                 <Link className="navbar-item" to={store.auth.authenticated ? "/stocks" : "/"} >
-                    <img src="http://www.pngmart.com/files/7/Stocks-PNG-File.png" width="50" height="100" alt="stox" />Stox
+                    <div className="brand">
+                        <img src="http://www.pngmart.com/files/7/Stocks-PNG-File.png" width="50" height="100" alt="stox" />
+                        <span>Stox</span>
+                    </div>
                 </Link>
+                {
+                    store.auth.authenticated && (
+                        <>
+                            <p className="navbar-item">Hi, {store.auth.user.firstName}</p>
+                            <p className="navbar-item ">${store.auth.user.balance}</p>
+                        </>
+                    )
+                }
                 {store.auth.authenticated && (
                     <Link className="navbar-item" to="/search">
                         <i className="fas fa-search fa-lg"></i>
@@ -30,24 +41,26 @@ const Navbar: React.FC<RouteComponentProps> = observer(({ history }) => {
             </div>
 
             <div id="navbarBasicExample" className={`navbar-menu ${active && 'is-active'}`}>
-                {store.auth.authenticated && (
-                    <div className="navbar-start">
-                        <a className="navbar-item" href="#/">
-                            Portfolio
-                        </a>
 
-                        <a className="navbar-item" href="#/">
-                            Transactions
-                        </a>
-
-                    </div>
-                )}
                 <div className="navbar-end">
+                    {store.auth.authenticated && (
+                        <>
+                            <Link className="navbar-item" to="/portfolio" onClick={() => toggle(false)}>
+                                Portfolio
+                            </Link>
+
+                            <Link className="navbar-item" to="/transactions" onClick={() => toggle(false)}>
+                                Transactions
+                        </Link>
+                        </>
+                    )}
                     <div className="navbar-item">
                         {store.auth.authenticated && (
-                            <div className="buttons">
-                                <button onClick={() => store.auth.logout(history)} className="button is-warning">Logout</button>
-                            </div>
+                            <>
+                                <div className="buttons">
+                                    <button onClick={() => store.auth.logout(history)} className="button is-warning">Logout</button>
+                                </div>
+                            </>
                         )}
                     </div>
                 </div>
