@@ -12,7 +12,7 @@ router.post('/register', async (req, res, next) => {
         const newUser: UserSchema.Create = { firstName, lastName, email, password }
         const user: User = await User.create(newUser);
         req.session.user = user.id
-        res.send(user)
+        res.status(201).send(user)
     } catch (e) {
         next(e)
     }
@@ -22,7 +22,7 @@ router.post('/login', async (req, res, next) => {
         const { email, password } = req.body
         const user: User = await User.authenticate(email, password)
         req.session.user = user.id
-        req.session.save(() => { res.send(user); })
+        req.session.save(() => { res.status(200).send(user); })
 
     } catch (e) {
         next(e)
@@ -50,7 +50,7 @@ router.post('/logout', async (req, res, next) => {
                 resolve()
             })
         })
-        res.sendStatus(201)
+        res.sendStatus(204)
     } catch (e) {
         next(e)
     }

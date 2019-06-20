@@ -1,6 +1,12 @@
 import { Router } from 'express';
 import { User, PortfolioStock, Transaction } from '../data'
+import axios from 'axios'
 import ApiError from '../utils/error';
+const env = process.env.NODE_ENV
+
+const iex = axios.create({
+    baseURL: `https://api.iextrading.com/1.0/tops/`
+})
 
 const router = Router();
 
@@ -17,6 +23,14 @@ router.post('/buy', async (req, res, next) => {
             ...stock,
             price: body.price,
             type: 'BUY'
+        }
+        if (env !== 'test') {
+            const { data } = await iex.get(`last?symbols=${body.symbol}`)
+            if (data[0] && data[0].price) {
+                newTransaction.price = data[0].price
+            } else {
+                throw new ApiError(`Could not find data for ${body.symbol}`, 404)
+            }
         }
         if (body.quantity < 1) throw new ApiError(`Quantity must be at least 1, got ${body.quantity}`, 400)
         if (user.balance < newTransaction.quantity * newTransaction.price) {
@@ -53,6 +67,14 @@ router.post('/sell', async (req, res, next) => {
         const portfolio: PortfolioStock = await PortfolioStock.find(user.id, stock.symbol)
         if (!portfolio) {
             throw new ApiError('No shares of that stock found in your portfolio', 400)
+        }
+        if (env !== 'test') {
+            const { data } = await iex.get(`last?symbols=${body.symbol}`)
+            if (data[0] && data[0].price) {
+                newTransaction.price = data[0].price
+            } else {
+                throw new ApiError(`Could not find data for ${body.symbol}`, 404)
+            }
         }
         if (body.quantity < 1) throw new ApiError(`Quantity must be at least 1, got ${body.quantity}`, 400)
         const { quantity: originalQuantity } = portfolio

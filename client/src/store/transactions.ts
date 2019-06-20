@@ -56,7 +56,9 @@ export class NewTransaction implements ITransaction {
             this.root.auth.user.balance = round(data.balance)
             this.loading = false
         } catch (e) {
-            this.error = e.response.data
+            if (e.response) {
+                this.error = e.response.data
+            }
             this.loading = false
         }
     }
@@ -77,7 +79,9 @@ export class NewTransaction implements ITransaction {
             this.root.auth.user.balance = round(data.balance)
             this.loading = false
         } catch (e) {
-            this.error = e.response.data
+            if (e.response) {
+                this.error = e.response.data
+            }
             this.loading = false
         }
     }

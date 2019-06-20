@@ -15,7 +15,7 @@ describe('DATABASE', () => {
                 firstName: 'Omar',
                 lastName: 'Juice',
                 password: 'hello',
-                email: 'ojameer1@gmail.com'
+                email: 'oj@gmail.com'
             }
             const user: User = await User.create(newUser)
             expect(user).toBeTruthy()
@@ -45,7 +45,7 @@ describe('DATABASE', () => {
                 firstName: 'Omar',
                 lastName: 'Juice',
                 password: 'hello',
-                email: 'ojameer1@gmail.com'
+                email: 'oj@gmail.com'
             }
             const user: User = await User.create(newUser)
             const foundUser: User | null = await User.findById(user.id)

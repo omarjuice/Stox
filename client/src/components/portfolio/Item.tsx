@@ -38,19 +38,21 @@ const Item: React.FC<PortfolioStock> = observer(({ symbol, quantity, lastUpdated
     return (<>
         <Box color={color}>
             <div className={`column is-one-quarter is-size-5`}>
-                <Link className="has-text-weight-bold has-text-white" to="/search" onClick={() => search.addData(symbol, search.trie.find(symbol).name)}>{symbol}</Link>
+                <Link className="has-text-weight-bold has-text-white" to="/search"
+                    onClick={() => { search.addData(symbol, search.trie.find(symbol).name); search.set(symbol) }}>
+                    {symbol}
+                </Link>
             </div>
             <div className="column is-one-quarter">
                 {data.ohlc.error || data.last.error ?
                     <span className="has-text-danger">{(data.ohlc.error || '') + ' ' + (data.last.error || '')}</span>
                     :
                     data.ohlc.loading || data.last.loading ?
-                        <span>{quantity} X <i className="fas fa-circle-notch fa-spin"></i></span> :
+                        <span>{quantity} @ <i className="fas fa-circle-notch fa-spin"></i></span> :
                         <>
-
                             <span className={`has-text-weight-bold is-size-6 has-text-white`}>
                                 {quantity}
-                                {' '}X{' '}
+                                {' '}@{' '}
                                 {zeroPad(round(data.last.price))}
                                 {' '}={' '}
                                 <span className="is-size-5 has-text-weight-bold">{zeroPad(round(quantity * data.last.price))}</span>
@@ -61,7 +63,7 @@ const Item: React.FC<PortfolioStock> = observer(({ symbol, quantity, lastUpdated
             <div className={`column is-one-quarter has-text-white`}>
                 {moment.utc(lastUpdated).local().format('MM/DD/YY h:mm:ssa')}
             </div>
-            {!data.last.loading && !data.last.error && (
+            {!data.last.loading && !data.last.error && !data.ohlc.error && (
                 <div className="column is-one quarte has-text-centered">
                     <div className="buttons is-centered">
                         <button

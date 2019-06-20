@@ -1,4 +1,4 @@
-import { observable, when, action } from "mobx";
+import { observable, when, action, computed } from "mobx";
 import axios, { AxiosInstance, AxiosError } from "axios";
 import { RootStore } from ".";
 
@@ -25,7 +25,9 @@ class Portfolio {
                         this.error = null
                     }).catch((e: AxiosError) => {
                         if (e.response) {
-                            this.error = e.response.data
+                            if (e.response) {
+                                this.error = e.response.data
+                            }
                             this.loading = false
                         }
                     })
@@ -41,6 +43,15 @@ class Portfolio {
     @action add(stock: PortfolioStock) {
         this.stocks.unshift(stock)
         this.quantities[stock.symbol] = stock.quantity
+    }
+    @computed get totalValue() {
+        let total = 0
+        for (const stock of this.stocks) {
+            try {
+                total += this.root.search.cache[stock.symbol].last.price * stock.quantity
+            } catch (e) { }
+        }
+        return total
     }
 }
 

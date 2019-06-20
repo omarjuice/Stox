@@ -74,7 +74,7 @@ const SearchView: React.FC = observer(() => {
                                 ) : <i className="fas fa-circle-notch fa-spin"></i>}
                             </div>
                         </div>
-                        {view.last.price && (<div className="has-text-centered">
+                        {!view.last.error && view.last.price && !view.ohlc.error && (<div className="has-text-centered">
                             <button
                                 className={`button is-${transactions.pendingTransaction ? 'danger' : 'info'}`}
                                 disabled={transactions.pendingTransaction && pendingTransaction.loading}

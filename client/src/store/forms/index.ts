@@ -16,6 +16,7 @@ class Forms {
     }
     @action async submitLogin(e: React.FormEvent, history: History) {
         e.preventDefault();
+        this.login.loading = true
         const { email, password } = this.login
         if (!email || !password) {
             if (!email.length) this.login.errors.email = 'Please enter your email'
@@ -30,9 +31,11 @@ class Forms {
         } else {
             this.login.errors.main = this.root.auth.error
         }
+        this.login.loading = false
     }
     @action async submitRegister(e: React.FormEvent, history: History) {
         e.preventDefault()
+        this.register.loading = true
         const { email, password, firstName, lastName, reenter, errors } = this.register;
         if (!email) return errors.email = 'Please enter an email'
         if (!firstName) return errors.firstName = 'Please enter your first name'
@@ -49,6 +52,7 @@ class Forms {
         } else {
             this.register.errors.main = this.root.auth.error
         }
+        this.register.loading = false
     }
 }
 

@@ -1,6 +1,7 @@
 import { observable, action } from "mobx";
 
 export default class Login {
+    @observable loading: boolean = false
     @observable email: string = ""
     @observable password: string = ""
     @observable errors: {

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { observer } from 'mobx-react';
 import store from '../../store';
 import Item from './Item';
+import { zeroPad, round } from '../../utils';
 
 
 const Container: React.FC = ({ children }) => {
@@ -70,6 +71,10 @@ const Portfolio: React.FC = observer(() => {
                             <div className="column is-one-quarter has-text-centered">
                                 LAST TRANSACTION
                             </div>
+                            <div className="column is-one-quarter has-text-centered has-text-weight-bold">
+                                TOTAL: {zeroPad(round(portfolio.totalValue))}
+                            </div>
+
                         </>
                     )}
             </div>

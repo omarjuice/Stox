@@ -14,7 +14,7 @@ const SearchBar: React.FC = observer(() => {
                 <div className="control has-icons-right">
                     <input className="input is-large" type="text" placeholder="Search by ticker symbol"
                         onFocus={() => toggle(true)}
-                        onChange={(e) => search.input = e.target.value.toUpperCase()} value={search.input} />
+                        onChange={(e) => search.set(e.target.value)} value={search.input} />
                     {search.loading && <span className="icon is-small is-right">
                         <i className="fas fa-circle-notch fa-spin"></i>
                     </span>}

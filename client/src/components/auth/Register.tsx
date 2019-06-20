@@ -48,7 +48,7 @@ const Register: React.FC<RouteComponentProps> = observer(({ history }) => {
                 </form>
             </div>
             <p className="has-text-grey">
-                <button className="button is-text" onClick={() => history.push('/')}>Login</button>
+                <button className={`button is-text ${register.loading && 'is-loading'}`} onClick={() => history.push('/')}>Login</button>
             </p>
         </AuthContainer>
     );

@@ -26,7 +26,9 @@ class Auth {
     async register(details: User) {
         const response = await this.axios.post('/register', details)
             .catch((e: AxiosError) => {
-                this.error = e.response.data
+                if (e.response) {
+                    this.error = e.response.data
+                }
                 return { data: null, status: e.response.status }
             })
         this.user = response.data;

@@ -30,7 +30,7 @@ const Login: React.FC<RouteComponentProps> = observer(({ history }) => {
                 </form>
             </div>
             <p className="has-text-grey">
-                <button className="button is-text" onClick={() => history.push('/register')}>Sign Up</button>
+                <button className={`button is-text ${login.loading && 'is-loading'}`} onClick={() => history.push('/register')}>Sign Up</button>
             </p>
         </AuthContainer>
     );

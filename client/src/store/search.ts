@@ -103,8 +103,10 @@ class StockData {
                 this.ohlc.low = data.low
                 this.ohlc.loading = false
             }).catch((e: AxiosError) => {
-                this.ohlc.error = e.response.data
                 this.ohlc.loading = false
+                if (e.response) {
+                    this.ohlc.error = e.response.data
+                }
             })
         search.axios.get(`tops/last?symbols=${symbol}`)
             .then(res => {
@@ -115,7 +117,9 @@ class StockData {
                 this.last.loading = false
             }).catch((e: AxiosError) => {
                 this.last.loading = false
-                this.last.error = e.response.data
+                if (e.response) {
+                    this.last.error = e.response.data
+                }
             })
         when(
             () => search.socketConnected,
@@ -123,6 +127,7 @@ class StockData {
         )
 
     }
+
 
 }
 
@@ -153,7 +158,9 @@ class StocksSearch {
                 }
                 this.loading = false
             }).catch((e: AxiosError) => {
-                this.error = e.response.data
+                if (e.response) {
+                    this.error = e.response.data
+                }
                 this.loading = false
             })
 
@@ -174,7 +181,9 @@ class StocksSearch {
 
         })
     }
-
+    @action set(val: string) {
+        this.input = val.toUpperCase()
+    }
     @computed get list() {
         if (this.input.length) return this.trie.findStocks(this.input)
         else return []
