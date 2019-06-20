@@ -4,7 +4,8 @@ export const seedUser: UserSchema.Create = {
     firstName: 'John',
     lastName: 'McMmerphy',
     email: 'coolguy@email.com',
-    password: 'password'
+    password: 'password',
+    balance: 5000
 }
 export default async function seed() {
     await dropTables()

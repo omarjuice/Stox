@@ -114,7 +114,7 @@ describe('DATABASE', () => {
         }
         it('can add to a users portfolio', async () => {
             const newStock = await PortfolioStock.add(stock)
-            expect(newStock.createdAt).toBeTruthy()
+            expect(newStock.lastUpdated).toBeTruthy()
             expect(newStock.symbol).toBe(stock.symbol)
             expect(newStock.quantity).toBe(stock.quantity)
             expect(newStock.userId).toBe(stock.userId)
@@ -136,7 +136,7 @@ describe('DATABASE', () => {
             const portfolio = await PortfolioStock.add(stock)
             await PortfolioStock.add(stock2)
             const sellStock = { ...stock, quantity: 9 }
-            const updatedQuantity = portfolio.sell(sellStock.quantity)
+            const updatedQuantity = await portfolio.sell(sellStock.quantity)
             expect(updatedQuantity).toBe(stock.quantity - sellStock.quantity)
 
         })

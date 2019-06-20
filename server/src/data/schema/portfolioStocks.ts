@@ -73,7 +73,6 @@ export class PortfolioStock implements IPortfolioStock {
             WHERE "userId" = $1 AND symbol = $2
             RETURNING quantity
         `, [this.userId, this.symbol, sellQuantity])
-
         return this.quantity = quantity
     }
     async destroy() {

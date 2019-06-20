@@ -139,7 +139,7 @@ describe('API', () => {
 
         })
     })
-    describe.only('/transactions', () => {
+    describe('/transactions', () => {
         it('Should not work if the user is not authenticated', done => {
             agent.get('/api/transactions/history')
                 .expect(401)
@@ -256,7 +256,6 @@ describe('API', () => {
                 {
                     const res = await agent.get('/api/transactions/history')
                     const response: Transaction[] = res.body
-                    console.log(response)
                     expect(response.length).toBe(5)
                 }
             })
