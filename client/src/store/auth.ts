@@ -59,6 +59,7 @@ class Auth {
         this.authenticated = false
         this.user = null
         history.push('/')
+        this.root.initialize()
     }
     async me() {
         const response = await this.axios.get('/me')

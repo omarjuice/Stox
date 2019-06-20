@@ -1,7 +1,7 @@
 /// <reference path="../../../types.d.ts" />
 import Auth from './auth';
 import Forms from './forms';
-import { observable } from 'mobx';
+import { observable, action } from 'mobx';
 import StocksSearch from './search';
 import Portfolio from './portfolio';
 import Transactions from './transactions'
@@ -16,6 +16,9 @@ export class RootStore {
     @observable portfolio: Portfolio
     @observable transactions: Transactions
     constructor() {
+        this.initialize()
+    }
+    @action initialize() {
         this.auth = new Auth(this)
         this.forms = new Forms(this)
         this.search = new StocksSearch(this)

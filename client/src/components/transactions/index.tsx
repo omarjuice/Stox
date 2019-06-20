@@ -13,23 +13,24 @@ const Container: React.FC = ({ children }) => {
 }
 
 const Transactions: React.FC = observer(() => {
-    if (store.transactions.loading) {
+    const { transactions } = store
+    if (transactions.loading) {
         return (
             <Container>
                 <i className="fas fa-circle-notch fa-spin fa 3x"></i>
             </Container>
         )
     }
-    if (store.transactions.error) {
+    if (transactions.error) {
         return (
             <Container>
                 <p className="notification is-warning">
-                    {store.transactions.error}
+                    {transactions.error}
                 </p>
             </Container>
         )
     }
-    if (!store.transactions.history.length) {
+    if (!transactions.history.length) {
         return (
             <Container>
                 <p className="notification is-grey">
@@ -58,7 +59,7 @@ const Transactions: React.FC = observer(() => {
                     Date
                 </div>
             </div>
-            {store.transactions.history.map(transaction => <Item key={transaction.id} {...transaction} />)}
+            {transactions.history.map(transaction => <Item key={transaction.id} {...transaction} />)}
         </Container>
     )
 })

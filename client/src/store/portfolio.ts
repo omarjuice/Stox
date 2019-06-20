@@ -1,9 +1,10 @@
-import { observable, when } from "mobx";
+import { observable, when, action } from "mobx";
 import axios, { AxiosInstance, AxiosError } from "axios";
 import { RootStore } from ".";
 
 class Portfolio {
     @observable stocks: PortfolioStock[]
+    @observable quantities: { [key: string]: number } = {}
     @observable error: string | null
     @observable loading: boolean = true
     axios: AxiosInstance
@@ -19,7 +20,7 @@ class Portfolio {
             () => {
                 this.axios.get('/')
                     .then(res => {
-                        this.stocks = res.data
+                        this.set(res.data)
                         this.loading = false
                         this.error = null
                     }).catch((e: AxiosError) => {
@@ -30,6 +31,16 @@ class Portfolio {
                     })
             }
         )
+    }
+    @action set(stocks: PortfolioStock[]) {
+        this.stocks = stocks
+        for (const stock of stocks) {
+            this.quantities[stock.symbol] = stock.quantity
+        }
+    }
+    @action add(stock: PortfolioStock) {
+        this.stocks.unshift(stock)
+        this.quantities[stock.symbol] = stock.quantity
     }
 }
 

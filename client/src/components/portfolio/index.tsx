@@ -14,23 +14,24 @@ const Container: React.FC = ({ children }) => {
 }
 
 const Portfolio: React.FC = observer(() => {
-    if (store.portfolio.loading) {
+    const { portfolio } = store
+    if (portfolio.loading) {
         return (
             <Container>
                 <i className="fas fa-circle-notch fa-spin fa 3x"></i>
             </Container>
         )
     }
-    if (store.portfolio.error) {
+    if (portfolio.error) {
         return (
             <Container>
                 <p className="notification is-warning">
-                    {store.portfolio.error}
+                    {portfolio.error}
                 </p>
             </Container>
         )
     }
-    if (!store.portfolio.stocks.length) {
+    if (!portfolio.stocks.length) {
         return (
             <Container>
                 <p className="notification is-grey">
@@ -72,7 +73,7 @@ const Portfolio: React.FC = observer(() => {
                         </>
                     )}
             </div>
-            {store.portfolio.stocks.map((stock) => {
+            {portfolio.stocks.map((stock) => {
                 return <Item key={stock.symbol} {...stock} />
             })}
         </Container>

@@ -5,7 +5,7 @@ import { AxiosError } from 'axios';
 import { action } from 'mobx';
 import io from 'socket.io-client'
 import { when } from 'mobx';
-const socket = io('https://ws-api.iextrading.com/1.0/tops')
+
 
 
 class Trie {
@@ -119,7 +119,7 @@ class StockData {
             })
         when(
             () => search.socketConnected,
-            () => socket.emit('subscribe', this.symbol)
+            () => search.socket.emit('subscribe', this.symbol)
         )
 
     }
@@ -134,6 +134,7 @@ class StocksSearch {
     @observable socketConnected: boolean = false
     @observable cache: { [key: string]: StockData } = {}
     @observable error: string | null = null
+    socket = io('https://ws-api.iextrading.com/1.0/tops')
     axios: AxiosInstance
     trie: Trie = new Trie()
     root: RootStore
@@ -158,11 +159,11 @@ class StocksSearch {
 
 
 
-        socket.on('connect', () => {
+        this.socket.on('connect', () => {
             this.socketConnected = true
 
         })
-        socket.on('message', (message: string) => {
+        this.socket.on('message', (message: string) => {
             const data: IEX.TOPS = JSON.parse(message)
             const stockData: StockData = this.cache[data.symbol];
             if (data.lastSalePrice) {

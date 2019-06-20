@@ -6,24 +6,25 @@ import { Link } from 'react-router-dom';
 
 const Navbar: React.FC<RouteComponentProps> = observer(({ history }) => {
     const [active, toggle] = useState(false)
+    const { auth } = store
     return (
         <nav className="navbar is-fixed-top" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">
-                <Link className="navbar-item" to={store.auth.authenticated ? "/portfolio" : "/"} >
+                <Link className="navbar-item" to={auth.authenticated ? "/portfolio" : "/"} >
                     <div className="vertical">
                         <img src="http://www.pngmart.com/files/7/Stocks-PNG-File.png" width="50" height="100" alt="stox" />
                         <span>Stox</span>
                     </div>
                 </Link>
                 {
-                    store.auth.authenticated && (
+                    auth.authenticated && (
                         <div className="vertical">
-                            <p className="navbar-item ">Hi, {store.auth.user.firstName}</p>
-                            <p className="navbar-item is-paddingless ">${store.auth.user.balance}</p>
+                            <p className="navbar-item ">Hi, {auth.user.firstName}</p>
+                            <p className="navbar-item is-paddingless ">${auth.user.balance}</p>
                         </div>
                     )
                 }
-                {store.auth.authenticated && (
+                {auth.authenticated && (
                     <Link className="navbar-item" to="/search">
                         <i className="fas fa-search fa-lg"></i>
                     </Link>
@@ -43,7 +44,7 @@ const Navbar: React.FC<RouteComponentProps> = observer(({ history }) => {
             <div id="navbarBasicExample" className={`navbar-menu ${active && 'is-active'}`}>
 
                 <div className="navbar-end">
-                    {store.auth.authenticated && (
+                    {auth.authenticated && (
                         <>
                             <Link className="navbar-item" to="/portfolio" onClick={() => toggle(false)}>
                                 Portfolio
@@ -55,10 +56,10 @@ const Navbar: React.FC<RouteComponentProps> = observer(({ history }) => {
                         </>
                     )}
                     <div className="navbar-item">
-                        {store.auth.authenticated && (
+                        {auth.authenticated && (
                             <>
                                 <div className="buttons">
-                                    <button onClick={() => store.auth.logout(history)} className="button is-warning">Logout</button>
+                                    <button onClick={() => auth.logout(history)} className="button is-warning">Logout</button>
                                 </div>
                             </>
                         )}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
+import { Link } from 'react-router-dom'
 import store from '../../store';
 import { compare, zeroPad, round } from '../../utils';
 import moment from 'moment';
@@ -14,8 +15,8 @@ const Box: React.FC<{ color: string }> = ({ children, color }) => (
 )
 
 const Item: React.FC<PortfolioStock> = observer(({ symbol, quantity, lastUpdated }) => {
-
-    if (store.search.loading) {
+    const { transactions, search } = store
+    if (search.loading) {
         return (
             <Box color={'grey'}>
                 <div className={`column is-one-third is-size-5 has-text-weight-bold has-text-white`}>
@@ -31,13 +32,13 @@ const Item: React.FC<PortfolioStock> = observer(({ symbol, quantity, lastUpdated
         )
     }
 
-    const data = store.search.getData(symbol)
+    const data = search.getData(symbol)
     const color = compare(data.last.price, data.ohlc.open)
-    const doingTransaction = store.transactions.pendingTransaction && store.transactions.pendingTransaction.symbol === symbol
+    const doingTransaction = transactions.pendingTransaction && transactions.pendingTransaction.symbol === symbol
     return (<>
         <Box color={color}>
-            <div className={`column is-one-quarter is-size-5 has-text-weight-bold has-text-white`}>
-                {symbol}
+            <div className={`column is-one-quarter is-size-5`}>
+                <Link className="has-text-weight-bold has-text-white" to="/search" onClick={() => search.addData(symbol, search.trie.find(symbol).name)}>{symbol}</Link>
             </div>
             <div className="column is-one-quarter">
                 {data.ohlc.error || data.last.error ?
@@ -64,21 +65,21 @@ const Item: React.FC<PortfolioStock> = observer(({ symbol, quantity, lastUpdated
                 <div className="column is-one quarte has-text-centered">
                     <div className="buttons is-centered">
                         <button
-                            onClick={() => store.transactions.toggleTransaction({ symbol, price: data.last.price, type: 'BUY', quantity: 0 })}
+                            onClick={() => transactions.toggleTransaction({ symbol, price: data.last.price, type: 'BUY', quantity: 0 })}
                             className="button is-dark">
-                            {doingTransaction && store.transactions.pendingTransaction.type === 'BUY' ? 'CANCEL' : 'BUY'}
+                            {doingTransaction && transactions.pendingTransaction.type === 'BUY' ? 'CANCEL' : 'BUY'}
                         </button>
                         <button
-                            onClick={() => store.transactions.toggleTransaction({ symbol, price: data.last.price, type: 'SELL', quantity: 0 })}
+                            onClick={() => transactions.toggleTransaction({ symbol, price: data.last.price, type: 'SELL', quantity: 0 })}
                             className="button is-dark">
-                            {doingTransaction && store.transactions.pendingTransaction.type === 'SELL' ? 'CANCEL' : 'SELL'}
+                            {doingTransaction && transactions.pendingTransaction.type === 'SELL' ? 'CANCEL' : 'SELL'}
                         </button>
                     </div>
                 </div>
             )}
         </Box>
         {doingTransaction && (
-            <BuyForm size={1} newTransaction={store.transactions.pendingTransaction} />
+            <BuyForm size={2} newTransaction={transactions.pendingTransaction} />
         )}
     </>
     )

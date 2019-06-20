@@ -1,9 +1,8 @@
 import React from 'react';
-import { observer } from 'mobx-react';
 import moment from 'moment';
 
 
-const Item: React.FC<Transaction> = observer(({ symbol, quantity, price, type, createdAt }) => {
+const Item: React.FC<Transaction> = ({ symbol, quantity, price, type, createdAt }) => {
     return (
         <div className="box">
             <div className="columns">
@@ -23,6 +22,6 @@ const Item: React.FC<Transaction> = observer(({ symbol, quantity, price, type, c
             </div>
         </div>
     )
-})
+}
 
 export default Item

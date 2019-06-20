@@ -1,10 +1,9 @@
 import React from 'react';
-import { observer } from 'mobx-react';
 
 import SearchBar from './SearchBar';
 import SearchView from './SearchView';
 
-const Search: React.FC = observer(() => {
+const Search: React.FC = () => {
     return (
         <div className="container search">
             <div className="columns">
@@ -18,6 +17,6 @@ const Search: React.FC = observer(() => {
         </div>
 
     );
-})
+}
 
 export default Search;

@@ -1,6 +1,6 @@
 
 
-import React, { useState } from 'react';
+import React from 'react';
 import moment from 'moment'
 import { observer } from 'mobx-react';
 import store from '../../store';
@@ -11,12 +11,13 @@ const SearchView: React.FC = observer(() => {
 
 
     const { view } = store.search
-
+    const { transactions } = store
 
     if (view) {
         const comparisonColor = compare(view.last.price, view.ohlc.open)
-        const { pendingTransaction } = store.transactions
-        const toggleTransaction = () => store.transactions.toggleTransaction({ symbol: view.symbol, type: 'BUY', price: view.last.price, quantity: 0 })
+        const { pendingTransaction } = transactions
+        const toggleTransaction = () => transactions.toggleTransaction({ symbol: view.symbol, type: 'BUY', price: view.last.price, quantity: 0 })
+        const owns = store.portfolio.quantities[view.symbol]
         if (!view.last.loading && pendingTransaction && pendingTransaction.symbol !== view.symbol) toggleTransaction()
         return (
             <div className="card">
@@ -25,12 +26,15 @@ const SearchView: React.FC = observer(() => {
                         {view.symbol}
                     </p>
                     {!view.ohlc.loading && !view.last.loading && (
-                        <a onClick={() => store.search.addData(view.symbol, view.name, true)}
-                            href="#/" className="card-header-icon" aria-label="refresh">
-                            <span className="icon">
-                                <i className="fas fa-redo" aria-hidden="true"></i>
-                            </span>
-                        </a>
+                        <>
+                            {typeof owns === 'number' && <p className="card-header-icon is-size-6 has-text-weight-bold">You Own: {owns}</p>}
+                            <a onClick={() => store.search.addData(view.symbol, view.name, true)}
+                                href="#/" className="card-header-icon" aria-label="refresh">
+                                <span className="icon">
+                                    <i className="fas fa-redo" aria-hidden="true"></i>
+                                </span>
+                            </a>
+                        </>
                     )}
                 </div>
                 <div className="card-content has-text-centered">
@@ -72,13 +76,13 @@ const SearchView: React.FC = observer(() => {
                         </div>
                         {view.last.price && (<div className="has-text-centered">
                             <button
-                                className={`button is-${store.transactions.pendingTransaction ? 'danger' : 'info'}`}
-                                disabled={store.transactions.pendingTransaction && pendingTransaction.loading}
+                                className={`button is-${transactions.pendingTransaction ? 'danger' : 'info'}`}
+                                disabled={transactions.pendingTransaction && pendingTransaction.loading}
                                 onClick={() => { toggleTransaction(); }}>
-                                {store.transactions.pendingTransaction ? 'Cancel' : 'Buy'}
+                                {transactions.pendingTransaction ? 'Cancel' : 'Buy'}
                             </button>
-                            {store.transactions.pendingTransaction && (
-                                <BuyForm size={3} newTransaction={store.transactions.pendingTransaction} />
+                            {transactions.pendingTransaction && (
+                                <BuyForm size={3} newTransaction={transactions.pendingTransaction} />
                             )}
                         </div>)}
                     </div>
