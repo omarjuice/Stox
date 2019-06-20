@@ -18,12 +18,13 @@ router.post('/buy', async (req, res, next) => {
             price: body.price,
             type: 'BUY'
         }
+        if (body.quantity < 1) throw new ApiError(`Quantity must be at least 1, got ${body.quantity}`, 400)
         if (user.balance < newTransaction.quantity * newTransaction.price) {
             newTransaction.quantity = Math.floor(user.balance / newTransaction.price)
             stock.quantity = newTransaction.quantity
         }
         if (stock.quantity === 0) {
-            throw new ApiError(`Insufficient funds`, 400)
+            throw new ApiError(`Insufficient funds: Current balance ${user.balance}`, 400)
         }
         const transaction = await Transaction.create(newTransaction)
         const balance = await user.updateBalance(transaction.price * transaction.quantity, transaction.type)
@@ -53,6 +54,7 @@ router.post('/sell', async (req, res, next) => {
         if (!portfolio) {
             throw new ApiError('No shares of that stock found in your portfolio', 400)
         }
+        if (body.quantity < 1) throw new ApiError(`Quantity must be at least 1, got ${body.quantity}`, 400)
         const { quantity: originalQuantity } = portfolio
         await portfolio.sell(newTransaction.quantity)
         newTransaction.quantity = originalQuantity - portfolio.quantity

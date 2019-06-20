@@ -9,18 +9,18 @@ const Navbar: React.FC<RouteComponentProps> = observer(({ history }) => {
     return (
         <nav className="navbar is-fixed-top" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">
-                <Link className="navbar-item" to={store.auth.authenticated ? "/stocks" : "/"} >
-                    <div className="brand">
+                <Link className="navbar-item" to={store.auth.authenticated ? "/portfolio" : "/"} >
+                    <div className="vertical">
                         <img src="http://www.pngmart.com/files/7/Stocks-PNG-File.png" width="50" height="100" alt="stox" />
                         <span>Stox</span>
                     </div>
                 </Link>
                 {
                     store.auth.authenticated && (
-                        <>
-                            <p className="navbar-item">Hi, {store.auth.user.firstName}</p>
-                            <p className="navbar-item ">${store.auth.user.balance}</p>
-                        </>
+                        <div className="vertical">
+                            <p className="navbar-item ">Hi, {store.auth.user.firstName}</p>
+                            <p className="navbar-item is-paddingless ">${store.auth.user.balance}</p>
+                        </div>
                     )
                 }
                 {store.auth.authenticated && (

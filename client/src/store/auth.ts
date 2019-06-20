@@ -30,11 +30,11 @@ class Auth {
                 return { data: null, status: e.response.status }
             })
         this.user = response.data;
-        response.data.balance = round(response.data.balance)
         this.status = response.status;
         if (!this.user) {
             this.authenticated = false
         } else {
+            response.data.balance = round(response.data.balance)
             this.authenticated = true
         }
     }
@@ -44,12 +44,12 @@ class Auth {
                 this.error = e.response.data
                 return { data: null, status: e.response.status }
             })
-        response.data.balance = round(response.data.balance)
         this.user = response.data;
         this.status = response.status
         if (!this.user) {
             this.authenticated = false
         } else {
+            response.data.balance = round(response.data.balance)
             this.authenticated = true
         }
 

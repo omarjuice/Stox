@@ -4,7 +4,6 @@ import { observer } from 'mobx-react';
 import store from './store';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
-import Stocks from './components/Stocks';
 import Navbar from './components/Navbar';
 import Search from './components/search';
 import Portfolio from './components/portfolio';
@@ -16,14 +15,16 @@ class App extends React.Component<RouteComponentProps> {
     await store.auth.me()
     if (store.auth.authenticated) {
 
-      if (!['/stocks', '/portfolio', '/transactions', '/search'].includes(this.props.location.pathname)) {
-        this.props.history.push('/stocks')
+      if (!['/portfolio', '/transactions', '/search'].includes(this.props.location.pathname)) {
+        this.props.history.push('/portfolio')
       }
     } else {
       if (!['/', '/register'].includes(this.props.location.pathname)) {
         this.props.history.push('/')
       }
     }
+
+
   }
 
   render() {
@@ -31,12 +32,10 @@ class App extends React.Component<RouteComponentProps> {
       <div className="App">
         <Route component={Navbar} />
         <Route path="/register" exact component={Register} />
-        <Route path="/stocks" exact component={Stocks} />
         <Route path="/search" exact component={Search} />
         <Route path="/portfolio" exact component={Portfolio} />
         <Route path="/transactions" exact component={Transactions} />
         <Route path="/" exact component={Login} />
-
       </div>
     );
   }

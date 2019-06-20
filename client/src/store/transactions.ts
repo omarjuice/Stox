@@ -4,13 +4,14 @@ import { RootStore } from ".";
 import { round } from "../utils";
 
 
+
 export class NewTransaction implements ITransaction {
-    symbol: string
-    price: number
+    @observable symbol: string
+    @observable price: number
     @observable quantity: number = 0
     @observable error: string | null = null
     @observable loading: boolean = false
-    axios: AxiosInstance
+    @observable axios: AxiosInstance
     type: transactionType
     root: RootStore
     constructor(symbol: string, price: number, type: transactionType, store: RootStore) {
@@ -23,15 +24,19 @@ export class NewTransaction implements ITransaction {
             withCredentials: true
         })
     }
-    @action submit(e: React.FormEvent) {
+    @action async submit(e: React.FormEvent) {
         e.preventDefault()
         if (this.loading) return
         if (this.quantity < 1) {
             return this.error = 'Quantity must be greater than 0'
         }
         if (this.type === 'BUY') {
-            this.buy()
+            await this.buy()
         }
+        if (this.type === 'SELL') {
+            await this.sell()
+        }
+        this.root.transactions.toggleTransaction({ ...this })
     }
     @action async buy() {
         this.loading = true
@@ -41,23 +46,45 @@ export class NewTransaction implements ITransaction {
             quantity: this.quantity,
             type: 'BUY'
         }
-        const { data } = await this.axios.post('/buy', transaction)
-            .catch((e: AxiosError) => {
-                this.error = e.response.data
-                return { data: null }
-            })
-        if (data) {
+        try {
+            const res = await this.axios.post('/buy', transaction)
+            const data: TransactionResponse = res.data
             this.root.transactions.history.unshift(data.transaction)
             this.root.portfolio.stocks = this.root.portfolio.stocks.filter(stock => stock.symbol !== data.portfolio.symbol)
             this.root.portfolio.stocks.unshift(data.portfolio)
             this.root.auth.user.balance = round(data.balance)
+            this.loading = false
+        } catch (e) {
+            this.error = e.response.data
+            this.loading = false
         }
-        this.loading = false
+    }
+    @action async sell() {
+        this.loading = true
+        try {
+            const transaction: Transaction = {
+                symbol: this.symbol,
+                price: this.price,
+                quantity: this.quantity,
+                type: 'SELL'
+            }
+            const res = await this.axios.post('/sell', transaction)
+            const data: TransactionResponse = res.data
+            this.root.transactions.history.unshift(data.transaction)
+            this.root.portfolio.stocks = this.root.portfolio.stocks.filter(stock => stock.symbol !== data.portfolio.symbol)
+            if (data.portfolio.quantity > 0) this.root.portfolio.stocks.unshift(data.portfolio)
+            this.root.auth.user.balance = round(data.balance)
+            this.loading = false
+        } catch (e) {
+            this.error = e.response.data
+            this.loading = false
+        }
     }
     @action set(value: number) {
         this.quantity = value
         this.error = null
     }
+
 }
 
 
@@ -65,7 +92,7 @@ class Transactions {
     @observable history: Transaction[] = []
     @observable loading: boolean = true
     @observable error: string | null
-    pendingTransaction: NewTransaction
+    @observable pendingTransaction: NewTransaction | null
     axios: AxiosInstance
     root: RootStore
     constructor(store: RootStore) {
@@ -89,10 +116,13 @@ class Transactions {
             }
         )
     }
-    createTransaction(transaction: Transaction) {
+    @action toggleTransaction(transaction: Transaction) {
         if (!this.pendingTransaction || this.pendingTransaction.symbol !== transaction.symbol || this.pendingTransaction.type !== transaction.type) {
             this.pendingTransaction = new NewTransaction(transaction.symbol, transaction.price, transaction.type, this.root)
+        } else {
+            this.pendingTransaction = null
         }
+
         return this.pendingTransaction
     }
 

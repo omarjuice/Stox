@@ -96,6 +96,7 @@ class StockData {
         search.axios.get(`stock/${symbol}/ohlc`)
             .then(res => {
                 const data: IEX.OHLC = res.data
+                if (!data.open) throw new Error(`Error getting data for ${symbol}`)
                 this.ohlc.open = data.open.price
                 this.ohlc.close = data.close.price
                 this.ohlc.high = data.high
@@ -108,6 +109,7 @@ class StockData {
         search.axios.get(`tops/last?symbols=${symbol}`)
             .then(res => {
                 const data: IEX.LAST[] = res.data
+                if (!data[0].price) throw new Error(`Error getting data for ${symbol}`)
                 this.last = { ...this.last, ...data[0] }
                 this.last.error = null
                 this.last.loading = false
@@ -163,9 +165,11 @@ class StocksSearch {
         socket.on('message', (message: string) => {
             const data: IEX.TOPS = JSON.parse(message)
             const stockData: StockData = this.cache[data.symbol];
-            stockData.last.price = data.lastSalePrice
-            stockData.last.time = data.lastSaleTime
-            stockData.last.size = data.lastSaleSize
+            if (data.lastSalePrice) {
+                stockData.last.price = data.lastSalePrice
+                stockData.last.time = data.lastSaleTime
+                stockData.last.size = data.lastSaleSize
+            }
 
         })
     }

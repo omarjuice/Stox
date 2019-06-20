@@ -1,4 +1,5 @@
 export const zeroPad = (num: number) => {
+
     let string = String(num)
     let idxOf = string.indexOf('.')
     if (idxOf < 0) {

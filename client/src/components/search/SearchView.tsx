@@ -5,19 +5,19 @@ import moment from 'moment'
 import { observer } from 'mobx-react';
 import store from '../../store';
 import { zeroPad, compare } from '../../utils';
-import BuyForm from './BuyForm';
+import BuyForm from '../TransactionForm';
 
 const SearchView: React.FC = observer(() => {
 
 
     const { view } = store.search
-    const [isBuying, toggle] = useState(false)
 
 
     if (view) {
-
-
         const comparisonColor = compare(view.last.price, view.ohlc.open)
+        const { pendingTransaction } = store.transactions
+        const toggleTransaction = () => store.transactions.toggleTransaction({ symbol: view.symbol, type: 'BUY', price: view.last.price, quantity: 0 })
+        if (!view.last.loading && pendingTransaction && pendingTransaction.symbol !== view.symbol) toggleTransaction()
         return (
             <div className="card">
                 <div className="card-header">
@@ -71,15 +71,18 @@ const SearchView: React.FC = observer(() => {
                             </div>
                         </div>
                         {view.last.price && (<div className="has-text-centered">
-                            <button className={`button is-${isBuying ? 'danger' : 'info'}`} disabled={isBuying && store.transactions.pendingTransaction.loading}
-                                onClick={() => { store.transactions.createTransaction({ symbol: view.symbol, type: 'BUY', price: view.last.price, quantity: 0 }); toggle(!isBuying) }}>
-                                {isBuying ? 'Cancel' : 'Buy'}
+                            <button
+                                className={`button is-${store.transactions.pendingTransaction ? 'danger' : 'info'}`}
+                                disabled={store.transactions.pendingTransaction && pendingTransaction.loading}
+                                onClick={() => { toggleTransaction(); }}>
+                                {store.transactions.pendingTransaction ? 'Cancel' : 'Buy'}
                             </button>
-                            {isBuying && (
-                                <BuyForm newTransaction={store.transactions.pendingTransaction} />
+                            {store.transactions.pendingTransaction && (
+                                <BuyForm size={3} newTransaction={store.transactions.pendingTransaction} />
                             )}
                         </div>)}
                     </div>
+
                 </div>
             </div>
         )

@@ -58,7 +58,7 @@ const Transactions: React.FC = observer(() => {
                     Date
                 </div>
             </div>
-            {store.transactions.history.map(transaction => <Item {...transaction} />)}
+            {store.transactions.history.map(transaction => <Item key={transaction.id} {...transaction} />)}
         </Container>
     )
 })
