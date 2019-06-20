@@ -1,5 +1,5 @@
 import React from 'react';
-import { NewTransaction } from '../store/transactions';
+import NewTransaction from '../store/transactions/newTransaction';
 import { observer } from 'mobx-react';
 import { round, zeroPad } from '../utils';
 
