@@ -36,6 +36,12 @@ declare namespace IEX {
         size: number
         time: number
     }
+    type TOPS = {
+        symbol: string
+        lastSalePrice: number
+        lastSaleSize: number
+        lastSaleTime: number
+    }
 }
 declare type transactionType = 'BUY' | 'SELL'
 

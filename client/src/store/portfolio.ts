@@ -23,8 +23,10 @@ class Portfolio {
                         this.loading = false
                         this.error = null
                     }).catch((e: AxiosError) => {
-                        this.error = e.response.data
-                        this.loading = false
+                        if (e.response) {
+                            this.error = e.response.data
+                            this.loading = false
+                        }
                     })
             }
         )

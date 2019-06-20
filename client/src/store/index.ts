@@ -8,6 +8,7 @@ import Transactions from './transactions'
 
 
 
+
 export class RootStore {
     @observable auth: Auth
     @observable forms: Forms

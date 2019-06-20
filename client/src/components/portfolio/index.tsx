@@ -45,8 +45,8 @@ const Portfolio: React.FC = observer(() => {
     }
     return (
         <Container>
-            {store.portfolio.stocks.map(stock => {
-                return <Item {...stock} />
+            {store.portfolio.stocks.map((stock) => {
+                return <Item key={stock.symbol} {...stock} />
             })}
         </Container>
     )

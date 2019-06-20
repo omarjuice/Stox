@@ -47,7 +47,7 @@ export class NewTransaction implements ITransaction {
                 return { data: null }
             })
         if (data) {
-            this.root.transactions.history.push(data.transaction)
+            this.root.transactions.history.unshift(data.transaction)
             this.root.portfolio.stocks = this.root.portfolio.stocks.filter(stock => stock.symbol !== data.portfolio.symbol)
             this.root.portfolio.stocks.unshift(data.portfolio)
             this.root.auth.user.balance = round(data.balance)
@@ -90,7 +90,7 @@ class Transactions {
         )
     }
     createTransaction(transaction: Transaction) {
-        if (!this.pendingTransaction || this.pendingTransaction.symbol !== transaction.symbol) {
+        if (!this.pendingTransaction || this.pendingTransaction.symbol !== transaction.symbol || this.pendingTransaction.type !== transaction.type) {
             this.pendingTransaction = new NewTransaction(transaction.symbol, transaction.price, transaction.type, this.root)
         }
         return this.pendingTransaction

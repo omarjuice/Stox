@@ -67,6 +67,7 @@ export class Transaction implements ITransaction {
                 *
             FROM transactions
             WHERE "userId" = $1
+            ORDER BY "createdAt" DESC
         `, [userId])
         return transactions.map((transaction: TransactionSchema.DB) => {
             transaction.price = transaction.price / 1000

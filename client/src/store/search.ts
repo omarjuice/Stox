@@ -3,6 +3,9 @@ import { RootStore } from '.';
 import axios, { AxiosInstance } from 'axios';
 import { AxiosError } from 'axios';
 import { action } from 'mobx';
+import io from 'socket.io-client'
+import { when } from 'mobx';
+const socket = io('https://ws-api.iextrading.com/1.0/tops')
 
 
 class Trie {
@@ -112,21 +115,28 @@ class StockData {
                 this.last.loading = false
                 this.last.error = e.response.data
             })
+        when(
+            () => search.socketConnected,
+            () => socket.emit('subscribe', this.symbol)
+        )
+
     }
 
 }
 
+
 class StocksSearch {
-    @observable loading: boolean = false
+    @observable loading: boolean = true
     @observable input: string = ''
     @observable view: StockData
-    cache: { [key: string]: StockData } = {}
+    @observable socketConnected: boolean = false
+    @observable cache: { [key: string]: StockData } = {}
+    @observable error: string | null = null
     axios: AxiosInstance
     trie: Trie = new Trie()
     root: RootStore
     constructor(store: RootStore) {
         this.root = store
-        this.loading = true
         this.axios = axios.create({
             baseURL: 'https://api.iextrading.com/1.0/'
         })
@@ -139,7 +149,25 @@ class StocksSearch {
                     }
                 }
                 this.loading = false
+            }).catch((e: AxiosError) => {
+                this.error = e.response.data
+                this.loading = false
             })
+
+
+
+        socket.on('connect', () => {
+            this.socketConnected = true
+
+        })
+        socket.on('message', (message: string) => {
+            const data: IEX.TOPS = JSON.parse(message)
+            const stockData: StockData = this.cache[data.symbol];
+            stockData.last.price = data.lastSalePrice
+            stockData.last.time = data.lastSaleTime
+            stockData.last.size = data.lastSaleSize
+
+        })
     }
 
     @computed get list() {
@@ -152,6 +180,14 @@ class StocksSearch {
         }
         this.view = this.cache[symbol]
     }
+    @action getData(symbol: string) {
+        if (!this.cache[symbol]) {
+            const { name } = this.trie.find(symbol)
+            this.cache[symbol] = new StockData(symbol, name, this)
+        }
+        return this.cache[symbol]
+    }
+
 }
 
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom'
 import { observer } from 'mobx-react';
 import store from '../../store';
+import Item from './Item';
 
 const Container: React.FC = ({ children }) => {
     return (
@@ -41,6 +42,25 @@ const Transactions: React.FC = observer(() => {
             </Container>
         )
     }
+    return (
+        <Container>
+            <div className="columns">
+                <div className="column is-one-quarter">
+                    Type
+                </div>
+                <div className="column is-one-quarter">
+                    Symbol
+                </div>
+                <div className="column is-one-quarter">
+                    Amount
+                </div>
+                <div className="column is-one-quarter">
+                    Date
+                </div>
+            </div>
+            {store.transactions.history.map(transaction => <Item {...transaction} />)}
+        </Container>
+    )
 })
 
 export default Transactions
