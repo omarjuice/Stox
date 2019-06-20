@@ -10,6 +10,7 @@ export const createTables = async function () {
     await db.query(userSchema.create)
     await db.query(transactionSchema.create)
     await db.query(portfolioStockSchema.create)
+    await db.query('CREATE INDEX "idx_transactions_userId" ON transactions("userId")')
 
 }
 export const dropTables = async function () {

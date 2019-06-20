@@ -1,10 +1,10 @@
 import { User, dropTables, createTables } from "../data";
 
 export const seedUser: UserSchema.Create = {
-    firstName: 'John',
-    lastName: 'McMmerphy',
-    email: 'coolguy@email.com',
-    password: 'password',
+    firstName: 'Omar',
+    lastName: 'Jameer',
+    email: 'ojameer1@gmail.com',
+    password: '123',
     balance: 5000
 }
 export default async function seed() {
