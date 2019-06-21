@@ -11,3 +11,5 @@
 * React
 * Mobx
 * Socket.io
+
+`npm install` then `npm run dev`
