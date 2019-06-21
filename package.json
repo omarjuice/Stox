@@ -1,5 +1,5 @@
 {
-  "name": "ttp-fs",
+  "name": "stox",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -15,12 +15,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/omarjuice/TTP-FS.git"
+    "url": "git+https://github.com/omarjuice/stox.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/omarjuice/TTP-FS/issues"
+    "url": "https://github.com/omarjuice/stox/issues"
   },
-  "homepage": "https://github.com/omarjuice/TTP-FS#readme"
+  "homepage": "https://github.com/omarjuice/stox#readme"
 }

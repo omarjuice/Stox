@@ -1,5 +1,5 @@
 {
-  "name": "ttp-fs-server",
+  "name": "stox-server",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
