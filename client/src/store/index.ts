@@ -29,7 +29,6 @@ export class RootStore {
     }
     @action onResize() {
         this.windowWidth = window.innerWidth
-        console.log(this.windowWidth);
     }
 
 }
