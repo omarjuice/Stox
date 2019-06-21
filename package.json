@@ -10,6 +10,7 @@
   "scripts": {
     "server": "npm run dev --prefix server",
     "client": "npm start --prefix client",
+    "install": "npm install --prefix client && npm install --prefix server",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "repository": {

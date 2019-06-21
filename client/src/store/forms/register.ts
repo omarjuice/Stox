@@ -40,10 +40,8 @@ export default class Register {
         const { email, password, firstName, lastName, reenter, errors } = this;
         if (!email) return errors.email = 'Please enter an email'
         if (!firstName) return errors.firstName = 'Please enter your first name'
-        if (!nameRegex.test(firstName)) return errors.firstName = 'Name must contain letters only'
         if (firstName.length > 40) return errors.firstName = 'Name too long, max 40 characters'
         if (!lastName) return errors.lastName = 'Please enter your last name'
-        if (!nameRegex.test(lastName)) return errors.lastName = 'Name must contain letters only'
         if (lastName.length > 40) return errors.lastName = 'Name too long, max 40 characters'
         if (!password) return errors.password = 'Please enter a password'
         if (!reenter) return errors.reenter = 'Please reenter your password'
