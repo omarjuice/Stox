@@ -71,8 +71,3 @@ declare type TransactionResponse = {
     transaction: Transaction
 }
 
-declare type Purchase = {
-    symbol: string
-    quantity: number
-    price: number
-}

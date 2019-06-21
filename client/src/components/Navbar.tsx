@@ -59,7 +59,7 @@ const Navbar: React.FC<RouteComponentProps> = observer(({ history }) => {
                         {auth.authenticated && (
                             <>
                                 <div className="buttons">
-                                    <button onClick={() => auth.logout(history)} className="button is-warning">Logout</button>
+                                    <button onClick={() => { auth.logout(history); toggle(false) }} className="button is-warning">Logout</button>
                                 </div>
                             </>
                         )}

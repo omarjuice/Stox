@@ -13,34 +13,39 @@ const Register: React.FC<RouteComponentProps> = observer(({ history }) => {
     return (
         <AuthContainer type="register">
             <div className="box">
-                <form onSubmit={e => forms.submitRegister(e, history)}>
+                <form onSubmit={e => register.submit(e, history)}>
                     <div className="field">
                         <div className="control">
-                            <input onChange={e => register.set('email', e.target.value)} value={register.email} className="input is-large" type="email" placeholder="Your Email" autoFocus={true} />
+                            <input onChange={e => register.set('email', e.target.value)} value={register.email}
+                                className="input is-large" type="email" placeholder="Your Email" autoFocus={true} />
                         </div>
                         <p className="help is-danger">{register.errors.email}</p>
                     </div>
                     <div className="field">
                         <div className="control">
-                            <input onChange={e => register.set('firstName', e.target.value)} value={register.firstName} className="input is-large" type="text" placeholder="Your First Name" />
+                            <input onChange={e => register.set('firstName', e.target.value)} value={register.firstName}
+                                className="input is-large" type="text" placeholder="Your First Name" />
                         </div>
                         <p className="help is-danger">{register.errors.firstName}</p>
                     </div>
                     <div className="field">
                         <div className="control">
-                            <input onChange={e => register.set('lastName', e.target.value)} value={register.lastName} className="input is-large" type="text" placeholder="Your Last Name" />
+                            <input onChange={e => register.set('lastName', e.target.value)} value={register.lastName}
+                                className="input is-large" type="text" placeholder="Your Last Name" />
                         </div>
                         <p className="help is-danger">{register.errors.lastName}</p>
                     </div>
                     <div className="field">
                         <div className="control">
-                            <input onChange={e => register.set('password', e.target.value)} value={register.password} className="input is-large" type="password" placeholder="Your Password" />
+                            <input onChange={e => register.set('password', e.target.value)} value={register.password}
+                                className="input is-large" type="password" placeholder="Your Password" />
                         </div>
                         <p className="help is-danger">{register.errors.password}</p>
                     </div>
                     <div className="field">
                         <div className="control">
-                            <input onChange={e => register.set('reenter', e.target.value)} value={register.reenter} className="input is-large" type="password" placeholder="Reenter you password" />
+                            <input onChange={e => register.set('reenter', e.target.value)} value={register.reenter}
+                                className="input is-large" type="password" placeholder="Reenter your password" />
                         </div>
                         <p className="help is-danger">{register.errors.reenter}</p>
                     </div>

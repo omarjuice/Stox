@@ -8,7 +8,7 @@ import BuyForm from '../TransactionForm';
 
 const Box: React.FC<{ color: string }> = ({ children, color }) => (
     <div className={`box has-background-${color}`}>
-        <div className="columns is-vcentered">
+        <div className="columns is-centered is-mobile is-multiline">
             {children}
         </div>
     </div>
@@ -37,13 +37,13 @@ const Item: React.FC<PortfolioStock> = observer(({ symbol, quantity, lastUpdated
     const doingTransaction = transactions.pendingTransaction && transactions.pendingTransaction.symbol === symbol
     return (<>
         <Box color={color}>
-            <div className={`column is-one-quarter is-size-5`}>
+            <div className={`column is-one-quarter-desktop is-half-mobile is-size-5`}>
                 <Link className="has-text-weight-bold has-text-white" to="/search"
                     onClick={() => { search.addData(symbol, search.trie.find(symbol).name); search.set(symbol) }}>
                     {symbol}
                 </Link>
             </div>
-            <div className="column is-one-quarter">
+            <div className="column is-one-quarter-desktop is-half-mobile">
                 {data.ohlc.error || data.last.error ?
                     <span className="has-text-danger">{(data.ohlc.error || '') + ' ' + (data.last.error || '')}</span>
                     :
@@ -60,11 +60,11 @@ const Item: React.FC<PortfolioStock> = observer(({ symbol, quantity, lastUpdated
                         </>
                 }
             </div>
-            <div className={`column is-one-quarter has-text-white`}>
+            <div className={`column is-one-quarter-desktop is-half-mobile has-text-white`}>
                 {moment.utc(lastUpdated).local().format('MM/DD/YY h:mm:ssa')}
             </div>
             {!data.last.loading && !data.last.error && !data.ohlc.error && (
-                <div className="column is-one quarte has-text-centered">
+                <div className="column is-one-quarter-desktop is-half-mobile has-text-centered">
                     <div className="buttons is-centered">
                         <button
                             onClick={() => transactions.toggleTransaction({ symbol, price: data.last.price, type: 'BUY', quantity: 0 })}

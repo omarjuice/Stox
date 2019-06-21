@@ -13,25 +13,25 @@ const Login: React.FC<RouteComponentProps> = observer(({ history }) => {
     return (
         <AuthContainer type="login">
             <div className="box">
-                <form onSubmit={e => forms.submitLogin(e, history)}>
+                <form onSubmit={e => login.submit(e, history)}>
                     <div className="field">
                         <div className="control">
-                            <input onChange={(e) => login.set('email', e.target.value)} value={login.email} className="input is-large" type="email" placeholder="Your Email" autoFocus={true} />
+                            <input onChange={(e) => login.set('email', e.target.value)} value={login.email}
+                                className="input is-large" type="email" placeholder="Your Email" autoFocus={true} />
                         </div>
                         <p className="help is-danger">{login.errors.email}</p>
                     </div>
                     <div className="field">
                         <div className="control">
-                            <input onChange={e => login.set('password', e.target.value)} value={login.password} className="input is-large" type="password" placeholder="Your Password" />
+                            <input onChange={e => login.set('password', e.target.value)} value={login.password}
+                                className="input is-large" type="password" placeholder="Your Password" />
                         </div>
                         <p className="help is-danger">{login.errors.password}</p>
                     </div>
-                    <button className="button is-block is-info is-large is-fullwidth">Login</button>
+                    <button className={`button is-block is-info is-large is-fullwidth ${login.loading && 'is-loading'}`}>Login</button>
                 </form>
             </div>
-            <p className="has-text-grey">
-                <button className={`button is-text ${login.loading && 'is-loading'}`} onClick={() => history.push('/register')}>Sign Up</button>
-            </p>
+            <button className={`button is-text`} onClick={() => history.push('/register')}>Sign Up</button>
         </AuthContainer>
     );
 })

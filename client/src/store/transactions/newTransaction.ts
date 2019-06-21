@@ -1,5 +1,5 @@
-import { observable, when, action, computed } from "mobx";
-import axios, { AxiosInstance, AxiosError } from "axios";
+import { observable, action, computed } from "mobx";
+import axios, { AxiosInstance } from "axios";
 import { RootStore } from "..";
 import { round } from "../../utils";
 

@@ -65,8 +65,15 @@ export class User implements UserSchema.I {
             ("firstName", "lastName", password, email)
             VALUES ($1, $2, $3, $4)
             RETURNING id, "firstName", "lastName", email, "createdAt", balance
-        `, [data.firstName, data.lastName, password, data.email]).catch(() => {
-            throw new ApiError(`A user with the email ${data.email} already exists.`, 400)
+        `, [data.firstName, data.lastName, password, data.email]).catch((e) => {
+            let code = e.code
+            let message = e.message
+            if (code === '23505')
+                message = `A user with the email ${data.email} already exists.`;
+            if (code === '22001')
+                message = `Names must be under 41 chars, emails must be under 256 chars`
+
+            throw new ApiError(message, 400)
         })
 
 

@@ -13,7 +13,9 @@ const AuthContainer: React.FC<Props> = observer(({ children, type }) => {
             <div className="hero-body">
                 <div className="container has-text-centered">
                     <div className="column is-4 is-offset-4">
-                        <p className={`subtitle has-text-${error ? 'danger' : 'grey'}`}>{error ? error : type === 'login' ? 'Please login to proceed.' : 'Register'}</p>
+                        <p className={`subtitle has-text-${error ? 'danger' : 'grey'}`}>
+                            {error ? error : type === 'login' ? 'Please login to proceed.' : 'Register'}
+                        </p>
                         {children}
                     </div>
                 </div>

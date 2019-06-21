@@ -13,3 +13,7 @@
     flex-direction: column;
     align-items: center;
 }
+::-webkit-scrollbar { 
+    display: none; 
+    width: 0
+}
